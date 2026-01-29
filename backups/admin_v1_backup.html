@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | لوحة التحكم</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        :root {
+            --primary-green: #2d5016;
+            --accent-gold: #d4af37;
+            --light-green: #f0f7e9;
+            --text-dark: #2c3e50;
+            --border-color: #ddd;
+            --success: #27ae60;
+            --danger: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--light-green) 0%, #ffffff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: var(--primary-green);
+            font-size: 2em;
+        }
+
+        .back-btn {
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            background: white;
+            border: 2px solid var(--border-color);
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            border-color: var(--primary-green);
+        }
+
+        .tab.active {
+            background: var(--primary-green);
+            color: white;
+            border-color: var(--primary-green);
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            color: var(--primary-green);
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--accent-gold);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:hover {
+            background: var(--light-green);
+        }
+
+        .price-input {
+            width: 100px;
+            padding: 8px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .price-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: var(--accent-gold);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #b8941f;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* JSON Editor */
+        .json-editor {
+            width: 100%;
+            min-height: 400px;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Category Section */
+        .category-section {
+            margin-bottom: 30px;
+        }
+
+        .category-header {
+            background: var(--primary-green);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <div class="header">
+            <h1>⚙️ Admin Panel | لوحة التحكم</h1>
+            <a href="index.html" class="back-btn">← Back to Terminal</a>
+        </div>
+
+        <div class="container">
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab" :class="{ active: activeTab === 'shop' }" @click="activeTab = 'shop'">
+                    🏪 Shop Settings
+                </div>
+                <div class="tab" :class="{ active: activeTab === 'salads' }" @click="activeTab = 'salads'">
+                    🥗 Base Salads
+                </div>
+                <div class="tab" :class="{ active: activeTab === 'toppings' }" @click="activeTab = 'toppings'">
+                    🍅 Toppings
+                </div>
+                <div class="tab" :class="{ active: activeTab === 'json' }" @click="activeTab = 'json'">
+                    📝 JSON Editor
+                </div>
+            </div>
+
+            <!-- Shop Settings Tab -->
+            <div v-if="activeTab === 'shop'" class="card">
+                <h2 class="card-title">Shop Settings</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Shop Name (English)</label>
+                    <input type="text" class="form-input" v-model="config.shop.name" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Shop Name (Arabic)</label>
+                    <input type="text" class="form-input" v-model="config.shop.nameAr" dir="rtl" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tagline (English)</label>
+                    <input type="text" class="form-input" v-model="config.shop.tagline" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tagline (Arabic)</label>
+                    <input type="text" class="form-input" v-model="config.shop.taglineAr" dir="rtl" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Logo File Name</label>
+                    <input type="text" class="form-input" v-model="config.shop.logo" />
+                    <small style="color: #666;">Must be in same folder (e.g., Logo.png)</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Product Code (for Daftra)</label>
+                    <input type="text" class="form-input" v-model="config.shop.productCode" maxlength="6" />
+                    <small style="color: #666;">6-digit code used in barcode generation</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Currency</label>
+                    <input type="text" class="form-input" v-model="config.shop.currency" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Primary Color</label>
+                    <input type="color" class="form-input" v-model="config.shop.primaryColor" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Accent Color</label>
+                    <input type="color" class="form-input" v-model="config.shop.accentColor" />
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" @click="saveConfig">💾 Save Settings</button>
+                </div>
+            </div>
+
+            <!-- Base Salads Tab -->
+            <div v-if="activeTab === 'salads'" class="card">
+                <h2 class="card-title">Base Salads Pricing</h2>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>English Name</th>
+                                <th>Arabic Name</th>
+                                <th>Description</th>
+                                <th>Price ({{ config.shop.currency }})</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="salad in config.baseSalads" :key="salad.id">
+                                <td>{{ salad.name }}</td>
+                                <td>{{ salad.nameAr }}</td>
+                                <td>{{ salad.description }}</td>
+                                <td>
+                                    <input 
+                                        type="number" 
+                                        class="price-input" 
+                                        v-model.number="salad.price" 
+                                        min="0" 
+                                        step="0.5"
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" @click="saveConfig">💾 Save Changes</button>
+                </div>
+            </div>
+
+            <!-- Toppings Tab -->
+            <div v-if="activeTab === 'toppings'" class="card">
+                <h2 class="card-title">Toppings Pricing</h2>
+                
+                <div v-for="category in config.toppings" :key="category.category" class="category-section">
+                    <div class="category-header">
+                        {{ category.category }} | {{ category.categoryAr }}
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>English Name</th>
+                                    <th>Arabic Name</th>
+                                    <th>Price per Scoop ({{ config.shop.currency }})</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in category.items" :key="item.id">
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.nameAr }}</td>
+                                    <td>
+                                        <input 
+                                            type="number" 
+                                            class="price-input" 
+                                            v-model.number="item.price" 
+                                            min="0" 
+                                            step="0.5"
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" @click="saveConfig">💾 Save Changes</button>
+                </div>
+            </div>
+
+            <!-- JSON Editor Tab -->
+            <div v-if="activeTab === 'json'" class="card">
+                <h2 class="card-title">Advanced JSON Editor</h2>
+                
+                <div class="info-box">
+                    <strong>⚠️ Advanced Users Only</strong>
+                    Edit the raw JSON configuration. Make sure to maintain valid JSON syntax.
+                </div>
+
+                <textarea 
+                    class="json-editor" 
+                    v-model="jsonText"
+                    spellcheck="false"
+                ></textarea>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" @click="saveFromJson">💾 Save JSON</button>
+                    <button class="btn btn-secondary" @click="formatJson">✨ Format JSON</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div v-if="notification" class="notification" :class="{ error: notificationError }">
+            {{ notification }}
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    config: {
+                        "shop": {
+                            "name": "Spool",
+                            "nameAr": "سبول",
+                            "tagline": "For all that the fields produce",
+                            "taglineAr": "لكل ما تنتجه الحقول",
+                            "logo": "Logo.png",
+                            "productCode": "000001",
+                            "currency": "SAR",
+                            "primaryColor": "#2d5016",
+                            "accentColor": "#d4af37"
+                        },
+                        "baseSalads": [
+                            {"id": "caesar", "name": "Caesar Salad", "nameAr": "سلطة السيزر", "price": 22, "description": "Romaine, parmesan, croutons, Caesar dressing", "descriptionAr": "خس روماني، بارميزان، خبز محمص، صوص سيزر"},
+                            {"id": "greek", "name": "Greek Salad", "nameAr": "السلطة اليونانية", "price": 24, "description": "Tomatoes, cucumber, olives, feta, olive oil", "descriptionAr": "طماطم، خيار، زيتون، جبن فيتا، زيت زيتون"},
+                            {"id": "fattoush", "name": "Fattoush", "nameAr": "فتوش", "price": 18, "description": "Mixed greens, crispy bread, pomegranate dressing", "descriptionAr": "خضار مشكلة، خبز مقرمش، صوص الرمان"},
+                            {"id": "tabbouleh", "name": "Tabbouleh", "nameAr": "تبولة", "price": 18, "description": "Parsley, tomatoes, bulgur, lemon dressing", "descriptionAr": "بقدونس، طماطم، برغل، صوص الليمون"},
+                            {"id": "rocca", "name": "Rocca Salad", "nameAr": "سلطة الجرجير", "price": 20, "description": "Arugula, cherry tomatoes, parmesan, balsamic", "descriptionAr": "جرجير، طماطم كرزية، بارميزان، بلسمك"},
+                            {"id": "caprese", "name": "Caprese Salad", "nameAr": "سلطة كابريزي", "price": 26, "description": "Mozzarella, tomatoes, basil, olive oil", "descriptionAr": "موزاريلا، طماطم، ريحان، زيت زيتون"},
+                            {"id": "cobb", "name": "Cobb Salad", "nameAr": "سلطة كوب", "price": 28, "description": "Chicken, bacon, eggs, avocado, mixed greens", "descriptionAr": "دجاج، لحم مقدد، بيض، أفوكادو، خضار مشكلة"},
+                            {"id": "nicoise", "name": "Niçoise Salad", "nameAr": "سلطة نيسواز", "price": 28, "description": "Tuna, eggs, olives, green beans, potatoes", "descriptionAr": "تونا، بيض، زيتون، فاصوليا خضراء، بطاطس"},
+                            {"id": "quinoa", "name": "Quinoa Salad", "nameAr": "سلطة الكينوا", "price": 25, "description": "Quinoa, mixed vegetables, lemon vinaigrette", "descriptionAr": "كينوا، خضار مشكلة، صوص الليمون"},
+                            {"id": "asian", "name": "Asian Sesame Salad", "nameAr": "سلطة آسيوية بالسمسم", "price": 24, "description": "Mixed greens, edamame, sesame dressing", "descriptionAr": "خضار مشكلة، إداماميه، صوص السمسم"},
+                            {"id": "custom", "name": "Build Your Own", "nameAr": "حسب الطلب", "price": 15, "description": "Start from scratch with your favorite ingredients", "descriptionAr": "ابدأ من الصفر مع مكوناتك المفضلة"}
+                        ],
+                        "toppings": [
+                            {
+                                "category": "Premium Proteins",
+                                "categoryAr": "بروتينات فاخرة",
+                                "items": [
+                                    {"id": "shrimp", "name": "Grilled Shrimp", "nameAr": "روبيان مشوي", "price": 15},
+                                    {"id": "salmon", "name": "Grilled Salmon", "nameAr": "سلمون مشوي", "price": 14}
+                                ]
+                            },
+                            {
+                                "category": "Standard Proteins",
+                                "categoryAr": "بروتينات",
+                                "items": [
+                                    {"id": "grilled-chicken", "name": "Grilled Chicken", "nameAr": "دجاج مشوي", "price": 10},
+                                    {"id": "crispy-chicken", "name": "Crispy Chicken", "nameAr": "دجاج مقرمش", "price": 10},
+                                    {"id": "tuna", "name": "Tuna", "nameAr": "تونا", "price": 9},
+                                    {"id": "boiled-eggs", "name": "Boiled Eggs", "nameAr": "بيض مسلوق", "price": 8}
+                                ]
+                            },
+                            {
+                                "category": "Cheese",
+                                "categoryAr": "أجبان",
+                                "items": [
+                                    {"id": "feta", "name": "Feta Cheese", "nameAr": "جبن فيتا", "price": 7},
+                                    {"id": "halloumi", "name": "Grilled Halloumi", "nameAr": "حلومي مشوي", "price": 8},
+                                    {"id": "mozzarella", "name": "Fresh Mozzarella", "nameAr": "موزاريلا طازجة", "price": 7}
+                                ]
+                            },
+                            {
+                                "category": "Premium Veggies",
+                                "categoryAr": "خضروات فاخرة",
+                                "items": [
+                                    {"id": "avocado", "name": "Avocado", "nameAr": "أفوكادو", "price": 7},
+                                    {"id": "roasted-beetroot", "name": "Roasted Beetroot", "nameAr": "شمندر محمص", "price": 5},
+                                    {"id": "sundried-tomatoes", "name": "Sun-dried Tomatoes", "nameAr": "طماطم مجففة", "price": 6},
+                                    {"id": "artichoke", "name": "Artichoke Hearts", "nameAr": "قلوب الخرشوف", "price": 6},
+                                    {"id": "roasted-peppers", "name": "Roasted Peppers", "nameAr": "فلفل محمص", "price": 5}
+                                ]
+                            },
+                            {
+                                "category": "Fresh Veggies",
+                                "categoryAr": "خضروات طازجة",
+                                "items": [
+                                    {"id": "cherry-tomatoes", "name": "Cherry Tomatoes", "nameAr": "طماطم كرزية", "price": 3},
+                                    {"id": "cucumbers", "name": "Cucumbers", "nameAr": "خيار", "price": 2},
+                                    {"id": "corn", "name": "Sweet Corn", "nameAr": "ذرة حلوة", "price": 3},
+                                    {"id": "black-olives", "name": "Black Olives", "nameAr": "زيتون أسود", "price": 3},
+                                    {"id": "green-olives", "name": "Green Olives", "nameAr": "زيتون أخضر", "price": 3},
+                                    {"id": "mushrooms", "name": "Mushrooms", "nameAr": "فطر", "price": 4},
+                                    {"id": "carrots", "name": "Shredded Carrots", "nameAr": "جزر مبشور", "price": 2},
+                                    {"id": "red-cabbage", "name": "Red Cabbage", "nameAr": "ملفوف أحمر", "price": 2},
+                                    {"id": "rocca", "name": "Fresh Rocca", "nameAr": "جرجير طازج", "price": 3},
+                                    {"id": "bell-peppers", "name": "Bell Peppers", "nameAr": "فلفل ملون", "price": 3}
+                                ]
+                            },
+                            {
+                                "category": "Crunch & Texture",
+                                "categoryAr": "مقرمشات",
+                                "items": [
+                                    {"id": "croutons", "name": "Croutons", "nameAr": "خبز محمص", "price": 3},
+                                    {"id": "walnuts", "name": "Walnuts", "nameAr": "جوز", "price": 5},
+                                    {"id": "almonds", "name": "Almonds", "nameAr": "لوز", "price": 5},
+                                    {"id": "pecans", "name": "Pecans", "nameAr": "بيكان", "price": 5},
+                                    {"id": "pumpkin-seeds", "name": "Pumpkin Seeds", "nameAr": "بذور اليقطين", "price": 4},
+                                    {"id": "sunflower-seeds", "name": "Sunflower Seeds", "nameAr": "بذور عباد الشمس", "price": 3},
+                                    {"id": "crispy-noodles", "name": "Crispy Noodles", "nameAr": "نودلز مقرمش", "price": 4}
+                                ]
+                            },
+                            {
+                                "category": "Extras",
+                                "categoryAr": "إضافات",
+                                "items": [
+                                    {"id": "parmesan", "name": "Parmesan Shavings", "nameAr": "بارميزان مبشور", "price": 4},
+                                    {"id": "pickles", "name": "Pickles", "nameAr": "مخلل", "price": 2},
+                                    {"id": "jalapenos", "name": "Jalapeños", "nameAr": "هالبينو", "price": 3},
+                                    {"id": "cranberries", "name": "Dried Cranberries", "nameAr": "توت بري مجفف", "price": 4},
+                                    {"id": "raisins", "name": "Raisins", "nameAr": "زبيب", "price": 3}
+                                ]
+                            }
+                        ]
+                    },
+                    activeTab: 'shop',
+                    jsonText: '',
+                    notification: null,
+                    notificationError: false
+                };
+            },
+            methods: {
+                saveConfig() {
+                    // In a real application, this would save to the server
+                    // For now, we'll update localStorage and show instructions
+                    this.jsonText = JSON.stringify(this.config, null, 2);
+                    localStorage.setItem('saladConfig', this.jsonText);
+                    
+                    this.downloadConfig();
+                    this.showNotification('Changes saved! Download the config.json file and replace the original.');
+                },
+                saveFromJson() {
+                    try {
+                        const parsed = JSON.parse(this.jsonText);
+                        this.config = parsed;
+                        localStorage.setItem('saladConfig', this.jsonText);
+                        
+                        this.downloadConfig();
+                        this.showNotification('JSON saved successfully!');
+                    } catch (error) {
+                        this.showNotification('Invalid JSON format: ' + error.message, true);
+                    }
+                },
+                formatJson() {
+                    try {
+                        const parsed = JSON.parse(this.jsonText);
+                        this.jsonText = JSON.stringify(parsed, null, 2);
+                        this.showNotification('JSON formatted successfully!');
+                    } catch (error) {
+                        this.showNotification('Invalid JSON format: ' + error.message, true);
+                    }
+                },
+                downloadConfig() {
+                    const blob = new Blob([this.jsonText], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'config.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                },
+                showNotification(message, isError = false) {
+                    this.notification = message;
+                    this.notificationError = isError;
+                    setTimeout(() => {
+                        this.notification = null;
+                        this.notificationError = false;
+                    }, 5000);
+                }
+            },
+            watch: {
+                activeTab(newTab) {
+                    if (newTab === 'json') {
+                        this.jsonText = JSON.stringify(this.config, null, 2);
+                    }
+                }
+            },
+            mounted() {
+                // Config is now embedded in data()
+                this.jsonText = JSON.stringify(this.config, null, 2);
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
