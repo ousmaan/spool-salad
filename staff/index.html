@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salad Terminal | محطة السلطات</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Spool Salad Staff Terminal - Point of Sale System">
+    <meta name="theme-color" content="#4CAF50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Spool Staff">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/images/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/images/icon-512x512.png">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
@@ -1716,31 +1727,62 @@
 
         <!-- Print Preview Modal -->
         <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
-            <div class="modal">
-                <h3 class="modal-header">{{ lang === 'ar' ? 'معاينة الملصق' : 'Label Preview' }}</h3>
+            <div class="modal" style="max-width: 400px;">
+                <h3 class="modal-header">{{ lang === 'ar' ? 'معاينة الفاتورة' : 'Receipt Preview' }}</h3>
                 
-                <div class="label-preview">
-                    <img :src="config.shop.logo" v-if="config.shop.logo" style="height: 30px; margin-bottom: 5px;" />
-                    <div style="font-weight: bold; margin-bottom: 5px; font-size: 1.1em;">
-                        {{ config.shop[lang === 'ar' ? 'nameAr' : 'name'] }}
+                <div class="label-preview" style="background: white; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Courier New', monospace;">
+                    <!-- Logo -->
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <img src="../logo transparent.png" style="max-width: 120px; height: auto;" />
                     </div>
-                    <div style="font-size: 0.8em; color: #666; margin-bottom: 10px;">
-                        {{ config.shop[lang === 'ar' ? 'taglineAr' : 'tagline'] }}
+                    
+                    <!-- Header -->
+                    <div style="text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
+                        <div style="font-weight: bold; font-size: 1.2em; margin-bottom: 5px;">{{ config.shop.nameAr }}</div>
+                        <div style="font-size: 0.85em; color: #666;">{{ currentDateTime }}</div>
+                        <div style="font-size: 0.85em; color: #666;">رقم الطلب: {{ barcodeData }}</div>
                     </div>
-                    <canvas id="barcode"></canvas>
-                    <div class="label-info">
-                        <div class="label-info-item">
-                            <span>{{ lang === 'ar' ? 'السعر' : 'Price' }}:</span>
-                            <strong>{{ totalPrice }} {{ config.shop.currency }}</strong>
+                    
+                    <!-- Order Header -->
+                    <div style="text-align: center; background: #000; color: #fff; padding: 5px; margin: 10px 0; font-weight: bold;">
+                        تفاصيل الطلب
+                    </div>
+                    
+                    <!-- Items List -->
+                    <table style="width: 100%; margin: 10px 0; font-size: 0.9em;">
+                        <tr style="border-bottom: 1px dotted #ccc;">
+                            <td style="text-align: right; padding: 5px 5px 5px 0;">{{ selectedSalad.nameAr }}</td>
+                            <td style="text-align: left; padding: 5px 0 5px 5px; font-weight: bold;">{{ selectedSalad.price }} {{ config.shop.currency }}</td>
+                        </tr>
+                        <tr v-for="topping in selectedToppings" :key="topping.id" style="border-bottom: 1px dotted #ccc;">
+                            <td style="text-align: right; padding: 5px 5px 5px 0;">  {{ topping.nameAr }} × {{ toppings[topping.id] }}</td>
+                            <td style="text-align: left; padding: 5px 0 5px 5px; font-weight: bold;">{{ topping.price * toppings[topping.id] }} {{ config.shop.currency }}</td>
+                        </tr>
+                    </table>
+                    
+                    <!-- Total -->
+                    <div style="border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 10px 0; margin: 10px 0;">
+                        <div style="display: flex; justify-content: space-between; font-size: 1.1em; font-weight: bold;">
+                            <span>المجموع الكلي</span>
+                            <span>{{ totalPrice }} {{ config.shop.currency }}</span>
                         </div>
-                        <div class="label-info-item">
-                            <span>{{ lang === 'ar' ? 'التاريخ' : 'Date' }}:</span>
-                            <strong>{{ currentDateTime }}</strong>
+                    </div>
+                    
+                    <!-- Barcode -->
+                    <div style="border-top: 2px dashed #000; border-bottom: 2px dashed #000; padding: 10px 0; margin: 10px 0;">
+                        <div style="text-align: center; font-size: 0.85em; color: #666; margin-bottom: 5px;">Order Barcode | باركود الطلب</div>
+                        <div style="display: flex; justify-content: center;">
+                            <svg id="barcode"></svg>
                         </div>
-                        <div class="label-info-item">
-                            <span>{{ lang === 'ar' ? 'رمز المنتج' : 'Product Code' }}:</span>
-                            <strong>{{ config.shop.productCode }}</strong>
-                        </div>
+                        <div style="text-align: center; font-size: 0.85em; color: #666; margin-top: 5px;">{{ barcodeData }}</div>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div style="text-align: center; border-top: 2px dashed #000; padding-top: 10px; margin-top: 10px;">
+                        <div style="font-weight: bold; margin-bottom: 5px;">شكراً لزيارتكم</div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">Thank You!</div>
+                        <div style="font-size: 0.85em; color: #666;">نتمنى لك وجبة شهية</div>
+                        <div style="font-size: 0.85em; color: #666;">Enjoy Your Meal!</div>
                     </div>
                 </div>
 
@@ -2001,89 +2043,273 @@
                     }
                 },
                 printLabel() {
-                    // Generate print command
-                    this.showModal = false;
-                    this.showNotification(this.lang === 'ar' ? 'يطبع الحين...' : 'Printing...');
+                    const svg = document.getElementById('barcode');
+                    if (!svg) {
+                        this.showNotification(this.lang === 'ar' ? 'خطأ في الباركود' : 'Barcode error');
+                        return;
+                    }
                     
-                    // Trigger browser print dialog
-                    setTimeout(() => {
-                        const printWindow = window.open('', '_blank');
-                        const canvas = document.getElementById('barcode');
-                        
-                        printWindow.document.write(`
-                            <!DOCTYPE html>
-                            <html>
-                            <head>
-                                <title>Print Label</title>
-                                <style>
-                                    @page {
-                                        size: 50mm 30mm;
-                                        margin: 0;
-                                    }
-                                    body {
-                                        margin: 0;
-                                        padding: 2mm;
-                                        font-family: Arial, sans-serif;
-                                        font-size: 10pt;
-                                    }
-                                    .label {
-                                        width: 50mm;
-                                        height: 30mm;
-                                        display: flex;
-                                        flex-direction: column;
-                                        justify-content: center;
-                                        align-items: center;
-                                        text-align: center;
-                                    }
-                                    .logo {
-                                        height: 20px;
-                                        margin-bottom: 1mm;
-                                    }
-                                    .shop-name {
-                                        font-weight: bold;
-                                        font-size: 10pt;
-                                        margin-bottom: 1mm;
-                                    }
-                                    .barcode {
-                                        margin: 1mm 0;
-                                    }
-                                    .price {
-                                        font-size: 12pt;
-                                        font-weight: bold;
-                                        margin: 1mm 0;
-                                    }
-                                    .datetime {
-                                        font-size: 7pt;
-                                        margin-top: 1mm;
-                                    }
-                                </style>
-                            </head>
-                            <body>
-                                <div class="label">
-                                    ${this.config.shop.logo ? `<img src="${this.config.shop.logo}" class="logo" />` : ''}
-                                    <div class="shop-name">${this.config.shop[this.lang === 'ar' ? 'nameAr' : 'name']}</div>
-                                    <div class="barcode">
-                                        <img src="${canvas.toDataURL()}" style="max-width: 45mm;" />
-                                    </div>
-                                    <div class="price">${this.totalPrice} ${this.config.shop.currency}</div>
-                                    <div class="datetime">${this.currentDateTime}</div>
+                    this.showModal = false;
+                    
+                    // Get barcode as SVG string
+                    const svgData = new XMLSerializer().serializeToString(svg);
+                    const saladName = this.selectedSalad.nameAr;
+                    const totalPrice = this.totalPrice;
+                    const currency = this.config.shop.currency;
+                    const isRTL = this.lang === 'ar';
+                    
+                    // Build itemized list with toppings
+                    let itemsList = '';
+                    
+                    // Add base salad
+                    itemsList += `
+                        <tr>
+                            <td class="item-name">${saladName}</td>
+                            <td class="item-price">${this.selectedSalad.price} ${currency}</td>
+                        </tr>
+                    `;
+                    
+                    // Add toppings
+                    this.selectedToppings.forEach(topping => {
+                        const qty = this.toppings[topping.id];
+                        const itemTotal = topping.price * qty;
+                        itemsList += `
+                            <tr>
+                                <td class="item-name">  ${topping.nameAr} × ${qty}</td>
+                                <td class="item-price">${itemTotal} ${currency}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    // Create print-only styles for 80mm receipt printer
+                    const printStyles = `
+                        <style id="print-only-styles">
+                            @media screen {
+                                body > *:not(#print-content) {
+                                    display: none !important;
+                                }
+                                #print-content {
+                                    display: block !important;
+                                }
+                            }
+                            @page {
+                                size: 80mm auto;
+                                margin: 3mm;
+                            }
+                            * {
+                                margin: 0;
+                                padding: 0;
+                                box-sizing: border-box;
+                                -webkit-print-color-adjust: exact;
+                                print-color-adjust: exact;
+                            }
+                            body {
+                                margin: 0;
+                                padding: 0;
+                                background: white;
+                                font-family: 'Courier New', 'Arial', monospace;
+                            }
+                            #print-content {
+                                width: 74mm;
+                                margin: 0 auto;
+                                padding: 3mm;
+                                background: white;
+                                color: black;
+                            }
+                            .receipt-logo {
+                                text-align: center;
+                                margin-bottom: 3mm;
+                            }
+                            .receipt-logo img {
+                                max-width: 50mm;
+                                height: auto;
+                            }
+                            .receipt-header {
+                                text-align: center;
+                                margin-bottom: 4mm;
+                                padding-bottom: 3mm;
+                                border-bottom: 2px dashed #000;
+                            }
+                            .shop-name {
+                                font-size: 18pt;
+                                font-weight: bold;
+                                margin-bottom: 2mm;
+                                letter-spacing: 1px;
+                            }
+                            .shop-info {
+                                font-size: 9pt;
+                                margin: 1mm 0;
+                                color: #333;
+                            }
+                            .order-header {
+                                text-align: center;
+                                font-size: 14pt;
+                                font-weight: bold;
+                                margin: 3mm 0;
+                                padding: 2mm 0;
+                                background: #000;
+                                color: #fff;
+                            }
+                            .items-table {
+                                width: 100%;
+                                margin: 3mm 0;
+                                border-collapse: collapse;
+                            }
+                            .items-table td {
+                                padding: 2mm 0;
+                                font-size: 11pt;
+                                border-bottom: 1px dotted #ccc;
+                            }
+                            .item-name {
+                                text-align: right;
+                                width: 60%;
+                                padding-right: 2mm;
+                            }
+                            .item-price {
+                                text-align: left;
+                                width: 40%;
+                                font-weight: bold;
+                            }
+                            .total-section {
+                                margin: 3mm 0;
+                                padding: 3mm 0;
+                                border-top: 2px solid #000;
+                                border-bottom: 2px solid #000;
+                            }
+                            .total-line {
+                                display: flex;
+                                justify-content: space-between;
+                                font-size: 16pt;
+                                font-weight: bold;
+                                padding: 2mm 0;
+                            }
+                            .barcode-section {
+                                margin: 4mm 0;
+                                padding: 3mm 0;
+                                border-top: 2px dashed #000;
+                                border-bottom: 2px dashed #000;
+                            }
+                            .barcode-label {
+                                text-align: center;
+                                font-size: 10pt;
+                                margin-bottom: 2mm;
+                                color: #666;
+                            }
+                            .barcode-container {
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                margin: 2mm 0;
+                            }
+                            .barcode-container svg {
+                                width: 65mm;
+                                height: auto;
+                            }
+                            .receipt-footer {
+                                text-align: center;
+                                margin-top: 4mm;
+                                padding-top: 3mm;
+                                border-top: 2px dashed #000;
+                            }
+                            .thank-you {
+                                font-size: 14pt;
+                                font-weight: bold;
+                                margin-bottom: 2mm;
+                            }
+                            .footer-info {
+                                font-size: 9pt;
+                                color: #666;
+                                margin: 1mm 0;
+                            }
+                            @media print {
+                                body > *:not(#print-content) {
+                                    display: none !important;
+                                }
+                                #print-content {
+                                    display: block !important;
+                                }
+                            }
+                        </style>
+                    `;
+                    
+                    // Get current date/time
+                    const now = new Date();
+                    const dateStr = now.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US');
+                    const timeStr = now.toLocaleTimeString(isRTL ? 'ar-SA' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+                    const shopName = this.config.shop.nameAr;
+                    const orderNum = this.barcodeData;
+                    
+                    // Create print content element
+                    const printDiv = `
+                        <div id="print-content">
+                            <!-- Logo -->
+                            <div class="receipt-logo">
+                                <img src="../logo transparent.png" alt="Logo" />
+                            </div>
+                            
+                            <!-- Header -->
+                            <div class="receipt-header">
+                                <div class="shop-name">${shopName}</div>
+                                <div class="shop-info">${dateStr}</div>
+                                <div class="shop-info">${timeStr}</div>
+                                <div class="shop-info">رقم الطلب: ${orderNum}</div>
+                            </div>
+                            
+                            <!-- Order Items -->
+                            <div class="order-header">تفاصيل الطلب</div>
+                            
+                            <table class="items-table">
+                                ${itemsList}
+                            </table>
+                            
+                            <!-- Total -->
+                            <div class="total-section">
+                                <div class="total-line">
+                                    <span>المجموع الكلي</span>
+                                    <span>${totalPrice} ${currency}</span>
                                 </div>
-                            </body>
-                            </html>
-                        `);
+                            </div>
+                            
+                            <!-- Barcode -->
+                            <div class="barcode-section">
+                                <div class="barcode-label">Order Barcode | باركود الطلب</div>
+                                <div class="barcode-container">
+                                    ${svgData}
+                                </div>
+                                <div class="barcode-label">${orderNum}</div>
+                            </div>
+                            
+                            <!-- Footer -->
+                            <div class="receipt-footer">
+                                <div class="thank-you">شكراً لزيارتكم</div>
+                                <div class="thank-you">Thank You!</div>
+                                <div class="footer-info">نتمنى لك وجبة شهية</div>
+                                <div class="footer-info">Enjoy Your Meal!</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Inject print content and styles
+                    document.head.insertAdjacentHTML('beforeend', printStyles);
+                    document.body.insertAdjacentHTML('beforeend', printDiv);
+                    
+                    // Wait and print
+                    setTimeout(() => {
+                        window.print();
                         
-                        printWindow.document.close();
-                        printWindow.focus();
+                        // Restore original content after print dialog closes
                         setTimeout(() => {
-                            printWindow.print();
-                            printWindow.close();
-                        }, 250);
-                    }, 100);
+                            document.getElementById('print-only-styles').remove();
+                            document.getElementById('print-content').remove();
+                        }, 500);
+                    }, 300);
                     
                     // Clear order after print
                     setTimeout(() => {
-                        this.clearOrder();
-                    }, 1000);
+                        if (confirm(this.lang === 'ar' ? 'تبي تمسح الطلب؟' : 'Clear order?')) {
+                            this.clearOrder();
+                        }
+                    }, 3000);
                 },
                 showNotification(message) {
                     this.notification = message;
@@ -2097,5 +2323,8 @@
             }
         }).mount('#app');
     </script>
+    
+    <!-- PWA Registration -->
+    <script src="/pwa-register.js"></script>
 </body>
 </html>
