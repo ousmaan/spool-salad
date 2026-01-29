@@ -1419,8 +1419,6 @@
             justify-content: center;
             z-index: 1000;
             animation: fadeIn 0.3s ease-out;
-            padding: 20px;
-            overflow-y: auto;
         }
 
         .modal {
@@ -1429,14 +1427,10 @@
             padding: 40px;
             max-width: 550px;
             width: 90%;
-            max-height: 90vh;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             border: 1px solid var(--border-color);
             animation: slideInLeft 0.4s ease-out;
             position: relative;
-            display: flex;
-            flex-direction: column;
-            margin: auto;
         }
 
         .modal-header {
@@ -1455,8 +1449,6 @@
             margin: 25px 0;
             background: var(--light);
             border-radius: 16px;
-            overflow-y: auto;
-            max-height: 60vh;
         }
 
         .label-preview canvas {
@@ -1479,12 +1471,6 @@
             display: flex;
             gap: 15px;
             margin-top: 25px;
-            flex-shrink: 0;
-            position: sticky;
-            bottom: 0;
-            background: var(--white);
-            padding-top: 15px;
-            border-top: 2px solid var(--border-color);
         }
 
         .modal-actions .btn {
@@ -1801,7 +1787,7 @@
                 </div>
 
                 <div class="modal-actions">
-                    <button ref="printButton" class="btn btn-primary" @click="printLabel">
+                    <button class="btn btn-primary" @click="printLabel">
                         {{ lang === 'ar' ? '🖨️ طباعة' : '🖨️ Print' }}
                     </button>
                     <button class="btn btn-danger" @click="showModal = false">
@@ -2330,18 +2316,6 @@
                     setTimeout(() => {
                         this.notification = null;
                     }, 3000);
-                }
-            },
-            watch: {
-                showModal(newVal) {
-                    if (newVal) {
-                        // Focus print button when modal opens
-                        this.$nextTick(() => {
-                            if (this.$refs.printButton) {
-                                this.$refs.printButton.focus();
-                            }
-                        });
-                    }
                 }
             },
             mounted() {

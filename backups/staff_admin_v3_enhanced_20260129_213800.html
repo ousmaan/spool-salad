@@ -353,6 +353,11 @@
                     <small style="color: #666;">Must be in same folder (e.g., Logo.png)</small>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label">Product Code (for Daftra)</label>
+                    <input type="text" class="form-input" v-model="config.shop.productCode" maxlength="6" />
+                    <small style="color: #666;">6-digit code used in barcode generation</small>
+                </div>
 
                 <div class="form-group">
                     <label class="form-label">Currency</label>
@@ -604,62 +609,101 @@
                             "tagline": "For all that the fields produce",
                             "taglineAr": "لكل ما تنتجه الحقول",
                             "logo": "logo transparent.png",
+                            "productCode": "000001",
                             "currency": "SAR",
                             "primaryColor": "#2d5016",
                             "accentColor": "#d4af37"
                         },
                         "baseSalads": [
-                            {"id": "quinoa-tabbouleh", "itemCode": "500001", "name": "Quinoa Tabbouleh Salad", "nameAr": "سلطة كينوا تبولة", "price": 19, "description": "Quinoa with traditional tabbouleh flavors", "descriptionAr": "كينوا مع نكهات التبولة التقليدية"},
-                            {"id": "date-salad", "itemCode": "500002", "name": "Date Salad", "nameAr": "سلطة التمر", "price": 19, "description": "Fresh salad with dates", "descriptionAr": "سلطة طازجة مع التمر"},
-                            {"id": "fusilli-broccoli", "itemCode": "500003", "name": "Fusilli Broccoli Salad", "nameAr": "سلطة فيوزلي بروكلي", "price": 20, "description": "Fusilli pasta with fresh broccoli", "descriptionAr": "معكرونة فيوزلي مع بروكلي طازج"},
-                            {"id": "tuna-salad", "itemCode": "500004", "name": "Tuna Salad", "nameAr": "سلطة تونة", "price": 19, "description": "Fresh tuna salad", "descriptionAr": "سلطة تونة طازجة"},
-                            {"id": "custom", "itemCode": "500005", "name": "Build Your Own", "nameAr": "سلطة حسب الطلب", "price": 13, "description": "Create your own custom salad", "descriptionAr": "أنشئ سلطتك الخاصة"},
-                            {"id": "caesar", "itemCode": "500006", "name": "Caesar Salad", "nameAr": "سلطة السيزر", "price": 19, "description": "Classic Caesar with romaine and parmesan", "descriptionAr": "سيزر كلاسيكية مع خس روماني وبارميزان"}
+                            {"id": "caesar", "name": "Caesar Salad", "nameAr": "سلطة السيزر", "price": 22, "description": "Romaine, parmesan, croutons, Caesar dressing", "descriptionAr": "خس روماني، بارميزان، خبز محمص، صوص سيزر"},
+                            {"id": "greek", "name": "Greek Salad", "nameAr": "السلطة اليونانية", "price": 24, "description": "Tomatoes, cucumber, olives, feta, olive oil", "descriptionAr": "طماطم، خيار، زيتون، جبن فيتا، زيت زيتون"},
+                            {"id": "fattoush", "name": "Fattoush", "nameAr": "فتوش", "price": 18, "description": "Mixed greens, crispy bread, pomegranate dressing", "descriptionAr": "خضار مشكلة، خبز مقرمش، صوص الرمان"},
+                            {"id": "tabbouleh", "name": "Tabbouleh", "nameAr": "تبولة", "price": 18, "description": "Parsley, tomatoes, bulgur, lemon dressing", "descriptionAr": "بقدونس، طماطم، برغل، صوص الليمون"},
+                            {"id": "rocca", "name": "Rocca Salad", "nameAr": "سلطة الجرجير", "price": 20, "description": "Arugula, cherry tomatoes, parmesan, balsamic", "descriptionAr": "جرجير، طماطم كرزية، بارميزان، بلسمك"},
+                            {"id": "caprese", "name": "Caprese Salad", "nameAr": "سلطة كابريزي", "price": 26, "description": "Mozzarella, tomatoes, basil, olive oil", "descriptionAr": "موزاريلا، طماطم، ريحان، زيت زيتون"},
+                            {"id": "cobb", "name": "Cobb Salad", "nameAr": "سلطة كوب", "price": 28, "description": "Chicken, bacon, eggs, avocado, mixed greens", "descriptionAr": "دجاج، لحم مقدد، بيض، أفوكادو، خضار مشكلة"},
+                            {"id": "nicoise", "name": "Niçoise Salad", "nameAr": "سلطة نيسواز", "price": 28, "description": "Tuna, eggs, olives, green beans, potatoes", "descriptionAr": "تونا، بيض، زيتون، فاصوليا خضراء، بطاطس"},
+                            {"id": "quinoa", "name": "Quinoa Salad", "nameAr": "سلطة الكينوا", "price": 25, "description": "Quinoa, mixed vegetables, lemon vinaigrette", "descriptionAr": "كينوا، خضار مشكلة، صوص الليمون"},
+                            {"id": "asian", "name": "Asian Sesame Salad", "nameAr": "سلطة آسيوية بالسمسم", "price": 24, "description": "Mixed greens, edamame, sesame dressing", "descriptionAr": "خضار مشكلة، إداماميه، صوص السمسم"},
+                            {"id": "custom", "name": "Build Your Own", "nameAr": "حسب الطلب", "price": 15, "description": "Start from scratch with your favorite ingredients", "descriptionAr": "ابدأ من الصفر مع مكوناتك المفضلة"}
                         ],
                         "toppings": [
                             {
-                                "category": "Sauces",
-                                "categoryAr": "الصوصات",
+                                "category": "Premium Proteins",
+                                "categoryAr": "بروتينات فاخرة",
                                 "items": [
-                                    {"id": "dill-sauce", "name": "Dill Sauce", "nameAr": "صوص شبت", "emoji": "🥒", "image": "dill.jpg", "price": 3},
-                                    {"id": "kale-sauce", "name": "Kale Sauce", "nameAr": "صوص الكيل", "emoji": "🥬", "image": "kale.jpg", "price": 5},
-                                    {"id": "caesar-sauce", "name": "Caesar Sauce", "nameAr": "صوص السيزر", "emoji": "🥗", "image": "caesar.jpg", "price": 4},
-                                    {"id": "pesto-sauce", "name": "Pesto Sauce", "nameAr": "صوص البسيتو", "emoji": "🌿", "image": "pesto.jpg", "price": 7},
-                                    {"id": "vinaigrette-sauce", "name": "Vinaigrette Sauce", "nameAr": "صوص فيناجريت", "emoji": "🍶", "image": "vinaigrette.jpg", "price": 5}
+                                    {"id": "shrimp", "name": "Grilled Shrimp", "nameAr": "روبيان مشوي", "price": 15},
+                                    {"id": "salmon", "name": "Grilled Salmon", "nameAr": "سلمون مشوي", "price": 14}
                                 ]
                             },
                             {
-                                "category": "Vegetables",
-                                "categoryAr": "الخضروات",
+                                "category": "Standard Proteins",
+                                "categoryAr": "بروتينات",
                                 "items": [
-                                    {"id": "broccoli", "name": "Broccoli", "nameAr": "بروكلي", "emoji": "🥦", "image": "broccoli.jpg", "price": 1},
-                                    {"id": "bell-peppers", "name": "Bell Peppers", "nameAr": "فلفل الوان", "emoji": "🫑", "image": "peppers.jpg", "price": 1},
-                                    {"id": "corn", "name": "Corn", "nameAr": "ذرة", "emoji": "🌽", "image": "corn.jpg", "price": 1},
-                                    {"id": "beets", "name": "Beets", "nameAr": "شمندر", "emoji": "🥕", "image": "beets.jpg", "price": 1},
-                                    {"id": "cherry-tomatoes", "name": "Cherry Tomatoes", "nameAr": "طماطم مشيري", "emoji": "🍅", "image": "tomatoes.jpg", "price": 1}
+                                    {"id": "grilled-chicken", "name": "Grilled Chicken", "nameAr": "دجاج مشوي", "price": 10},
+                                    {"id": "crispy-chicken", "name": "Crispy Chicken", "nameAr": "دجاج مقرمش", "price": 10},
+                                    {"id": "tuna", "name": "Tuna", "nameAr": "تونا", "price": 9},
+                                    {"id": "boiled-eggs", "name": "Boiled Eggs", "nameAr": "بيض مسلوق", "price": 8}
                                 ]
                             },
                             {
                                 "category": "Cheese",
-                                "categoryAr": "الأجبان",
+                                "categoryAr": "أجبان",
                                 "items": [
-                                    {"id": "feta-cheese", "name": "Feta Cheese", "nameAr": "جبنة فيتا", "emoji": "🧀", "image": "feta.jpg", "price": 1},
-                                    {"id": "parmesan-cheese", "name": "Parmesan Cheese", "nameAr": "جبنة بيرمزان", "emoji": "🧀", "image": "parmesan.jpg", "price": 1}
+                                    {"id": "feta", "name": "Feta Cheese", "nameAr": "جبن فيتا", "price": 7},
+                                    {"id": "halloumi", "name": "Grilled Halloumi", "nameAr": "حلومي مشوي", "price": 8},
+                                    {"id": "mozzarella", "name": "Fresh Mozzarella", "nameAr": "موزاريلا طازجة", "price": 7}
                                 ]
                             },
                             {
-                                "category": "Fruits",
-                                "categoryAr": "الفواكه",
+                                "category": "Premium Veggies",
+                                "categoryAr": "خضروات فاخرة",
                                 "items": [
-                                    {"id": "strawberries", "name": "Strawberries", "nameAr": "فراولة", "emoji": "🍓", "image": "strawberries.jpg", "price": 1},
-                                    {"id": "pomegranate", "name": "Pomegranate", "nameAr": "رمان", "emoji": "🍇", "image": "pomegranate.jpg", "price": 1}
+                                    {"id": "avocado", "name": "Avocado", "nameAr": "أفوكادو", "price": 7},
+                                    {"id": "roasted-beetroot", "name": "Roasted Beetroot", "nameAr": "شمندر محمص", "price": 5},
+                                    {"id": "sundried-tomatoes", "name": "Sun-dried Tomatoes", "nameAr": "طماطم مجففة", "price": 6},
+                                    {"id": "artichoke", "name": "Artichoke Hearts", "nameAr": "قلوب الخرشوف", "price": 6},
+                                    {"id": "roasted-peppers", "name": "Roasted Peppers", "nameAr": "فلفل محمص", "price": 5}
                                 ]
                             },
                             {
-                                "category": "Add-ons",
+                                "category": "Fresh Veggies",
+                                "categoryAr": "خضروات طازجة",
+                                "items": [
+                                    {"id": "cherry-tomatoes", "name": "Cherry Tomatoes", "nameAr": "طماطم كرزية", "price": 3},
+                                    {"id": "cucumbers", "name": "Cucumbers", "nameAr": "خيار", "price": 2},
+                                    {"id": "corn", "name": "Sweet Corn", "nameAr": "ذرة حلوة", "price": 3},
+                                    {"id": "black-olives", "name": "Black Olives", "nameAr": "زيتون أسود", "price": 3},
+                                    {"id": "green-olives", "name": "Green Olives", "nameAr": "زيتون أخضر", "price": 3},
+                                    {"id": "mushrooms", "name": "Mushrooms", "nameAr": "فطر", "price": 4},
+                                    {"id": "carrots", "name": "Shredded Carrots", "nameAr": "جزر مبشور", "price": 2},
+                                    {"id": "red-cabbage", "name": "Red Cabbage", "nameAr": "ملفوف أحمر", "price": 2},
+                                    {"id": "rocca", "name": "Fresh Rocca", "nameAr": "جرجير طازج", "price": 3},
+                                    {"id": "bell-peppers", "name": "Bell Peppers", "nameAr": "فلفل ملون", "price": 3}
+                                ]
+                            },
+                            {
+                                "category": "Crunch & Texture",
+                                "categoryAr": "مقرمشات",
+                                "items": [
+                                    {"id": "croutons", "name": "Croutons", "nameAr": "خبز محمص", "price": 3},
+                                    {"id": "walnuts", "name": "Walnuts", "nameAr": "جوز", "price": 5},
+                                    {"id": "almonds", "name": "Almonds", "nameAr": "لوز", "price": 5},
+                                    {"id": "pecans", "name": "Pecans", "nameAr": "بيكان", "price": 5},
+                                    {"id": "pumpkin-seeds", "name": "Pumpkin Seeds", "nameAr": "بذور اليقطين", "price": 4},
+                                    {"id": "sunflower-seeds", "name": "Sunflower Seeds", "nameAr": "بذور عباد الشمس", "price": 3},
+                                    {"id": "crispy-noodles", "name": "Crispy Noodles", "nameAr": "نودلز مقرمش", "price": 4}
+                                ]
+                            },
+                            {
+                                "category": "Extras",
                                 "categoryAr": "إضافات",
                                 "items": [
-                                    {"id": "extra-protein", "name": "Extra Protein", "nameAr": "إضافة بروتين", "emoji": "🥩", "image": "protein.jpg", "price": 7}
+                                    {"id": "parmesan", "name": "Parmesan Shavings", "nameAr": "بارميزان مبشور", "price": 4},
+                                    {"id": "pickles", "name": "Pickles", "nameAr": "مخلل", "price": 2},
+                                    {"id": "jalapenos", "name": "Jalapeños", "nameAr": "هالبينو", "price": 3},
+                                    {"id": "cranberries", "name": "Dried Cranberries", "nameAr": "توت بري مجفف", "price": 4},
+                                    {"id": "raisins", "name": "Raisins", "nameAr": "زبيب", "price": 3}
                                 ]
                             }
                         ]
