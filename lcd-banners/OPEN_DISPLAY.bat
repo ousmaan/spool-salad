@@ -1,0 +1,3 @@
+@echo off
+echo Opening LCD Display in browser...
+start http://localhost:8000/display.html

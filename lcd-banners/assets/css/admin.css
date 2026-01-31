@@ -1,0 +1,676 @@
+/* ===================================
+   ADMIN PANEL STYLES
+   =================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #2d5016;
+    --accent: #d4af37;
+    --success: #4CAF50;
+    --danger: #f44336;
+    --warning: #ff9800;
+    --info: #2196F3;
+    --dark: #1a1a1a;
+    --light: #f5f5f5;
+    --border: #e0e0e0;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--light);
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+/* ===================================
+   HEADER
+   =================================== */
+
+.admin-header {
+    background: linear-gradient(135deg, var(--primary) 0%, #1a3a0f 100%);
+    color: white;
+    padding: 20px 0;
+    box-shadow: var(--shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* ===================================
+   LANGUAGE TOGGLE
+   =================================== */
+
+.language-toggle {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 15px;
+    border-radius: 25px;
+}
+
+.language-toggle label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.btn-language {
+    padding: 6px 16px;
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-language:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-language.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+}
+
+/* ===================================
+   BUTTONS
+   =================================== */
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    padding: 10px 24px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+}
+
+.btn-primary:hover {
+    background: #c29d2f;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-success {
+    padding: 10px 24px;
+    background: var(--success);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+}
+
+.btn-success:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    padding: 10px 24px;
+    background: #757575;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.btn-secondary:hover {
+    background: #616161;
+}
+
+.btn-info {
+    padding: 10px 24px;
+    background: var(--info);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.btn-info:hover {
+    background: #1976D2;
+}
+
+.btn-block {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    padding: 5px;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+.btn-close {
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: #999;
+    line-height: 1;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+}
+
+.btn-close:hover {
+    color: var(--danger);
+}
+
+/* ===================================
+   LAYOUT
+   =================================== */
+
+.admin-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    display: flex;
+    gap: 30px;
+    padding: 30px;
+}
+
+.sidebar {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ===================================
+   SIDEBAR
+   =================================== */
+
+.sidebar-section {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+}
+
+.sidebar-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+.sidebar-stats {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 15px;
+}
+
+.stat {
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--primary) 0%, #1a3a0f 100%);
+    color: white;
+    border-radius: 10px;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+/* ===================================
+   FORM ELEMENTS
+   =================================== */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.form-control[type="color"] {
+    height: 45px;
+    cursor: pointer;
+}
+
+.form-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* ===================================
+   PRODUCTS HEADER
+   =================================== */
+
+.products-header {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+}
+
+.products-header h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--dark);
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    background: #e0e0e0;
+}
+
+.tab-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* ===================================
+   PRODUCTS GRID
+   =================================== */
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.product-card.inactive {
+    opacity: 0.5;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: var(--light);
+    border-left: 4px solid var(--accent);
+}
+
+.card-badge {
+    padding: 5px 12px;
+    background: var(--accent);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 12px;
+}
+
+.card-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.card-image {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.card-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.card-order {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--dark);
+}
+
+.card-title-ar {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.card-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.card-footer {
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+}
+
+.price-display {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.price-main {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.price-original {
+    font-size: 1.2rem;
+    text-decoration: line-through;
+    color: #999;
+}
+
+/* ===================================
+   MODAL
+   =================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    border-bottom: 2px solid var(--border);
+}
+
+.modal-header h2 {
+    font-size: 1.8rem;
+    color: var(--primary);
+}
+
+.modal-body {
+    padding: 30px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding: 20px 30px;
+    border-top: 2px solid var(--border);
+}
+
+.image-preview {
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.image-preview img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ===================================
+   PREVIEW PANEL
+   =================================== */
+
+.preview-panel {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.preview-iframe {
+    width: 100%;
+    height: 70vh;
+    border: none;
+}
+
+.preview-info {
+    padding: 20px;
+    background: var(--light);
+    text-align: center;
+    font-size: 0.95rem;
+    color: #666;
+}
+
+/* ===================================
+   TOAST NOTIFICATION
+   =================================== */
+
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 15px 25px;
+    background: var(--dark);
+    color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    z-index: 2000;
+    animation: slideIn 0.3s ease-out;
+    font-weight: 600;
+}
+
+.toast.success {
+    background: var(--success);
+}
+
+.toast.error {
+    background: var(--danger);
+}
+
+.toast.warning {
+    background: var(--warning);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ===================================
+   RESPONSIVE
+   =================================== */
+
+@media (max-width: 1200px) {
+    .admin-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .header-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        max-height: 95vh;
+    }
+}

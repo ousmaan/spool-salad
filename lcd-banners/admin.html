@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCD Banners - Admin Panel</title>
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-content">
+                <h1>🎨 LCD Banners Admin Panel</h1>
+                <div class="header-actions">
+                    <div class="language-toggle">
+                        <label>Language:</label>
+                        <button @click="setLanguage('en')" class="btn-language" :class="{ 'active': settings.language === 'en' }">
+                            EN
+                        </button>
+                        <button @click="setLanguage('ar')" class="btn-language" :class="{ 'active': settings.language === 'ar' }">
+                            AR
+                        </button>
+                    </div>
+                    <button @click="showPreview = !showPreview" class="btn-primary">
+                        {{ showPreview ? '📝 Edit' : '👁️ Preview' }}
+                    </button>
+                    <button @click="exportData" class="btn-success">
+                        💾 Export JSON
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="admin-container">
+            
+            <!-- Sidebar - Settings -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3>⚙️ Display Settings</h3>
+                    
+                    <div class="form-group">
+                        <label>Shop Name (EN)</label>
+                        <input v-model="settings.shopName" type="text" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Shop Name (AR)</label>
+                        <input v-model="settings.shopNameAr" type="text" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tagline (EN)</label>
+                        <input v-model="settings.tagline" type="text" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tagline (AR)</label>
+                        <input v-model="settings.taglineAr" type="text" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Slide Interval (ms)</label>
+                        <input v-model.number="settings.slideInterval" type="number" class="form-control" step="1000">
+                        <small>{{ settings.slideInterval / 1000 }}s per slide</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Auto-Refresh Interval (ms)</label>
+                        <input v-model.number="settings.autoRefreshInterval" type="number" class="form-control" step="10000">
+                        <small>{{ settings.autoRefreshInterval / 1000 }}s refresh</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Currency</label>
+                        <input v-model="settings.currency" type="text" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Primary Color</label>
+                        <input v-model="settings.primaryColor" type="color" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Accent Color</label>
+                        <input v-model="settings.accentColor" type="color" class="form-control">
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>📁 Quick Actions</h3>
+                    <button @click="importData" class="btn-secondary btn-block">
+                        📤 Import JSON
+                    </button>
+                    <input type="file" ref="fileInput" @change="handleFileImport" accept=".json" style="display: none;">
+                    
+                    <button @click="addNewProduct" class="btn-primary btn-block">
+                        ➕ Add Product
+                    </button>
+                    
+                    <button @click="saveToLocalStorage" class="btn-info btn-block">
+                        💾 Save Draft
+                    </button>
+                    
+                    <button @click="loadFromLocalStorage" class="btn-info btn-block">
+                        📂 Load Draft
+                    </button>
+                </div>
+
+                <div class="sidebar-stats">
+                    <div class="stat">
+                        <div class="stat-value">{{ activeProductsCount }}</div>
+                        <div class="stat-label">Active Items</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">{{ products.length }}</div>
+                        <div class="stat-label">Total Items</div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                
+                <!-- Preview Mode -->
+                <div v-if="showPreview" class="preview-panel">
+                    <iframe src="display.html" class="preview-iframe"></iframe>
+                    <div class="preview-info">
+                        <p>📺 Live Preview - Open display.html in full screen on LCD after exporting</p>
+                    </div>
+                </div>
+
+                <!-- Edit Mode -->
+                <div v-else>
+                    <!-- Product Grid -->
+                    <div class="products-header">
+                        <h2>🥗 Products & Banners</h2>
+                        <div class="filter-tabs">
+                            <button @click="filterType = 'all'" :class="{ 'active': filterType === 'all' }" class="tab-btn">
+                                All ({{ products.length }})
+                            </button>
+                            <button @click="filterType = 'product'" :class="{ 'active': filterType === 'product' }" class="tab-btn">
+                                Products ({{ productsByType('product').length }})
+                            </button>
+                            <button @click="filterType = 'combo'" :class="{ 'active': filterType === 'combo' }" class="tab-btn">
+                                Combos ({{ productsByType('combo').length }})
+                            </button>
+                            <button @click="filterType = 'promotion'" :class="{ 'active': filterType === 'promotion' }" class="tab-btn">
+                                Promotions ({{ productsByType('promotion').length }})
+                            </button>
+                            <button @click="filterType = 'announcement'" :class="{ 'active': filterType === 'announcement' }" class="tab-btn">
+                                Announcements ({{ productsByType('announcement').length }})
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="products-grid">
+                        <div v-for="(product, index) in filteredProducts" :key="product.id" class="product-card" :class="{ 'inactive': !product.active }">
+                            <div class="card-header" :style="{ borderLeftColor: product.accentColor }">
+                                <div class="card-badge" :style="{ background: product.accentColor }">
+                                    {{ product.type }}
+                                </div>
+                                <div class="card-actions">
+                                    <button @click="toggleActive(product)" class="btn-icon" :title="product.active ? 'Disable' : 'Enable'">
+                                        {{ product.active ? '👁️' : '🚫' }}
+                                    </button>
+                                    <button @click="editProduct(product)" class="btn-icon" title="Edit">
+                                        ✏️
+                                    </button>
+                                    <button @click="duplicateProduct(product)" class="btn-icon" title="Duplicate">
+                                        📋
+                                    </button>
+                                    <button @click="deleteProduct(index)" class="btn-icon" title="Delete">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card-image" :style="{ backgroundImage: `url(${product.imageUrl})` }">
+                                <div class="card-overlay">
+                                    <span class="card-order">#{{ product.displayOrder }}</span>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <h3 class="card-title">{{ product.name }}</h3>
+                                <p class="card-title-ar">{{ product.nameAr }}</p>
+                                <p class="card-description">{{ product.description || product.subtitle || '' }}</p>
+                                
+                                <div class="card-footer">
+                                    <div class="price-display">
+                                        <span class="price-main">{{ product.price || '-' }} {{ settings.currency }}</span>
+                                        <span v-if="product.originalPrice" class="price-original">{{ product.originalPrice }} {{ settings.currency }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+        <!-- Edit Modal -->
+        <div v-if="editingProduct" class="modal-overlay" @click.self="closeModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>{{ editingProduct.id ? 'Edit Item' : 'New Item' }}</h2>
+                    <button @click="closeModal" class="btn-close">×</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select v-model="editingProduct.type" class="form-control">
+                                <option value="product">Product</option>
+                                <option value="combo">Combo</option>
+                                <option value="promotion">Promotion</option>
+                                <option value="announcement">Announcement</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Display Order</label>
+                            <input v-model.number="editingProduct.displayOrder" type="number" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Active</label>
+                            <input v-model="editingProduct.active" type="checkbox" class="form-checkbox">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Name (English)</label>
+                            <input v-model="editingProduct.name" type="text" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Name (Arabic)</label>
+                            <input v-model="editingProduct.nameAr" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Description (English)</label>
+                            <textarea v-model="editingProduct.description" class="form-control" rows="2"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description (Arabic)</label>
+                            <textarea v-model="editingProduct.descriptionAr" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <div v-if="editingProduct.type === 'announcement'" class="form-row">
+                        <div class="form-group">
+                            <label>Subtitle (English)</label>
+                            <input v-model="editingProduct.subtitle" type="text" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Subtitle (Arabic)</label>
+                            <input v-model="editingProduct.subtitleAr" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price ({{ settings.currency }})</label>
+                            <input v-model.number="editingProduct.price" type="number" class="form-control" step="0.01">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Original Price (optional)</label>
+                            <input v-model.number="editingProduct.originalPrice" type="number" class="form-control" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Badge (English)</label>
+                            <input v-model="editingProduct.badge" type="text" class="form-control" placeholder="e.g., NEW, POPULAR">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Badge (Arabic)</label>
+                            <input v-model="editingProduct.badgeAr" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Image URL</label>
+                        <input v-model="editingProduct.imageUrl" type="url" class="form-control" placeholder="https://...">
+                        <small>Use Unsplash or upload to your server</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Accent Color</label>
+                        <input v-model="editingProduct.accentColor" type="color" class="form-control">
+                    </div>
+
+                    <div v-if="editingProduct.imageUrl" class="image-preview">
+                        <img :src="editingProduct.imageUrl" alt="Preview">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button @click="closeModal" class="btn-secondary">Cancel</button>
+                    <button @click="saveProduct" class="btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div v-if="toast.show" class="toast" :class="toast.type">
+            {{ toast.message }}
+        </div>
+    </div>
+
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="assets/js/admin.js"></script>
+</body>
+</html>

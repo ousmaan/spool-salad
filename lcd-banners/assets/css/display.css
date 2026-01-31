@@ -1,0 +1,563 @@
+/* ===================================
+   GLOBAL STYLES & RESET
+   =================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #1a4d2e;
+    --accent-color: #ffd700;
+    --text-light: #ffffff;
+    --text-dark: #1a1a1a;
+    --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.3);
+    --shadow-hard: 0 20px 60px rgba(0, 0, 0, 0.5);
+    --glow: 0 0 30px rgba(255, 215, 0, 0.4);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    color: var(--text-light);
+    overflow: hidden;
+    cursor: none;
+}
+
+/* Better Arabic Font */
+body[lang="ar"], [lang="ar"] * {
+    font-family: 'Noto Sans Arabic', 'Cairo', 'Tajawal', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+    font-weight: 500;
+    letter-spacing: 0;
+}
+
+/* ===================================
+   CONNECTION STATUS INDICATOR
+   =================================== */
+
+.connection-status {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    opacity: 0.6;
+}
+
+.status-dot {
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #f44336;
+    box-shadow: 0 0 10px rgba(244, 67, 54, 0.8);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.connection-status.connected .status-dot {
+    background: #4CAF50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ===================================
+   MAIN DISPLAY CONTAINER
+   =================================== */
+
+.display-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ===================================
+   SLIDE STYLES
+   =================================== */
+
+.slide {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Background Image with Ken Burns Effect */
+.slide-background {
+    position: absolute;
+    top: -5%;
+    left: -5%;
+    width: 110%;
+    height: 110%;
+    background-size: cover;
+    background-position: center;
+    animation: kenBurns 15s ease-out infinite alternate;
+    filter: brightness(0.5);
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* Remove blur from background - add to overlay instead for better performance */
+@keyframes kenBurns {
+    0% {
+        transform: scale(1) translate(0, 0) translateZ(0);
+    }
+    100% {
+        transform: scale(1.08) translate(-2%, -2%) translateZ(0);
+    }
+}
+
+
+/* Overlay for Better Text Readability */
+.slide-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.8) 100%
+    );
+    backdrop-filter: blur(3px);
+}
+
+/* ===================================
+   SLIDE CONTENT
+   =================================== */
+
+.slide-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px;
+}
+
+/* ===================================
+   BADGE STYLES
+   =================================== */
+
+.badge {
+    display: inline-block;
+    padding: 12px 30px;
+    background: var(--accent-color);
+    color: var(--text-light);
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    border-radius: 50px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 30px;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.badge.grand-opening {
+    font-size: 1.5rem;
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.5);
+    }
+}
+
+/* ===================================
+   ANNOUNCEMENT LAYOUT
+   =================================== */
+
+.content-announcement {
+    text-align: center;
+    animation: fadeInUp 1s ease-out;
+}
+
+.announcement-title {
+    font-size: 8rem;
+    font-weight: 900;
+    margin: 40px 0;
+    text-shadow: 0 5px 30px rgba(0, 0, 0, 0.8);
+    letter-spacing: -2px;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.announcement-subtitle {
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: 50px;
+    opacity: 0.95;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.shop-logo {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    text-shadow: 0 3px 15px rgba(212, 175, 55, 0.5);
+    margin-top: 50px;
+}
+
+/* ===================================
+   PRODUCT LAYOUT
+   =================================== */
+
+.content-product {
+    max-width: 900px;
+    animation: fadeInUp 1s ease-out;
+}
+
+.product-info {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(20px) saturate(150%);
+    padding: 60px;
+    border-radius: 30px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    will-change: transform;
+}
+
+.product-name {
+    font-size: 5rem;
+    font-weight: 800;
+    margin-bottom: 30px;
+    line-height: 1.1;
+    text-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
+}
+
+.product-description {
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 50px;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+/* ===================================
+   COMBO LAYOUT
+   =================================== */
+
+.content-combo {
+    max-width: 1000px;
+    text-align: center;
+    animation: fadeInUp 1s ease-out;
+}
+
+.combo-info {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(20px) saturate(150%);
+    padding: 60px 80px;
+    border-radius: 30px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    will-change: transform;
+}
+
+.combo-name {
+    font-size: 5.5rem;
+    font-weight: 800;
+    margin-bottom: 30px;
+    line-height: 1.1;
+    text-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
+}
+
+.combo-description {
+    font-size: 2.2rem;
+    font-weight: 300;
+    margin-bottom: 50px;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.price-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 20px;
+}
+
+.original-price {
+    font-size: 2.5rem;
+    opacity: 0.6;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+.savings {
+    font-size: 2rem;
+    color: #4CAF50;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(76, 175, 80, 0.5);
+}
+
+/* ===================================
+   PROMOTION LAYOUT
+   =================================== */
+
+.content-promotion {
+    max-width: 1000px;
+    text-align: center;
+    animation: fadeInUp 1s ease-out;
+}
+
+.promo-info {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(20px) saturate(150%);
+    padding: 60px 80px;
+    border-radius: 30px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    will-change: transform;
+}
+
+.promo-name {
+    font-size: 5.5rem;
+    font-weight: 800;
+    margin-bottom: 30px;
+    line-height: 1.1;
+    text-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
+}
+
+.promo-description {
+    font-size: 2.2rem;
+    font-weight: 300;
+    margin-bottom: 50px;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.price-prefix {
+    font-size: 2rem;
+    opacity: 0.8;
+    margin-right: 20px;
+    font-weight: 400;
+}
+
+/* ===================================
+   PRICE CONTAINER
+   =================================== */
+
+.price-container {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 15px;
+}
+
+.price {
+    font-size: 7rem;
+    font-weight: 900;
+    color: var(--accent-color);
+    text-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6);
+    line-height: 1;
+    filter: drop-shadow(0 5px 15px rgba(255, 215, 0, 0.5));
+}
+
+.currency {
+    font-size: 3rem;
+    font-weight: 700;
+    opacity: 0.9;
+}
+
+/* ===================================
+   SLIDE FOOTER
+   =================================== */
+
+.slide-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    text-align: center;
+    padding: 25px 40px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 50%, transparent 100%);
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-logo {
+    height: 80px;
+    width: auto;
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 30px rgba(255, 215, 0, 0.3));
+}
+
+.footer-tagline {
+    font-size: 1.3rem;
+    font-weight: 400;
+    opacity: 0.9;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* ===================================
+   PROGRESS BAR
+   =================================== */
+
+.progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 100;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), #FFA500);
+    transition: width 100ms linear;
+    box-shadow: 0 0 10px var(--accent-color);
+}
+
+/* ===================================
+   TRANSITIONS
+   =================================== */
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 1s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
+}
+
+.slide-enter-active, .slide-leave-active {
+    transition: transform 1s ease, opacity 1s ease;
+}
+
+.slide-enter-from {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.slide-leave-to {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+/* ===================================
+   ANIMATIONS
+   =================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===================================
+   ARABIC (RTL) SUPPORT
+   =================================== */
+
+[lang="ar"] {
+    direction: rtl;
+}
+
+[lang="ar"] .slide-content {
+    direction: rtl;
+    text-align: right;
+}
+
+[lang="ar"] .content-announcement {
+    direction: rtl;
+}
+
+[lang="ar"] .content-product,
+[lang="ar"] .content-combo,
+[lang="ar"] .content-promotion {
+    direction: rtl;
+}
+
+[lang="ar"] .product-name,
+[lang="ar"] .combo-name,
+[lang="ar"] .promo-name,
+[lang="ar"] .announcement-title {
+    text-align: right;
+    font-weight: 700;
+}
+
+[lang="ar"] .product-description,
+[lang="ar"] .combo-description,
+[lang="ar"] .promo-description,
+[lang="ar"] .announcement-subtitle {
+    text-align: right;
+    line-height: 1.8;
+}
+
+[lang="ar"] .price-container {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+[lang="ar"] .price-row {
+    flex-direction: row-reverse;
+}
+
+[lang="ar"] .badge {
+    font-family: 'Cairo', 'Tajawal', sans-serif;
+    font-weight: 800;
+}
+
+[lang="ar"] .slide-footer {
+    direction: rtl;
+}
+
+/* ===================================
+   RESPONSIVE (Just in Case)
+   =================================== */
+
+@media (max-width: 1920px) {
+    .announcement-title { font-size: 7rem; }
+    .product-name, .combo-name, .promo-name { font-size: 4.5rem; }
+    .price { font-size: 6rem; }
+}
+
+@media (max-width: 1366px) {
+    .announcement-title { font-size: 6rem; }
+    .product-name, .combo-name, .promo-name { font-size: 4rem; }
+    .price { font-size: 5rem; }
+}

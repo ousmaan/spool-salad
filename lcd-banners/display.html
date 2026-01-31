@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spool - Maintenance Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a4d2e 0%, #0a2417 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px;
+            direction: rtl;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .logo {
+            width: 200px;
+            height: auto;
+            margin: 0 auto 40px;
+            filter: drop-shadow(0 10px 30px rgba(255, 215, 0, 0.3));
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+            }
+            to {
+                filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.8));
+            }
+        }
+
+        .subtitle {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            opacity: 0.95;
+        }
+
+        .message {
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 50px;
+            opacity: 0.85;
+            line-height: 1.6;
+        }
+
+        .icon {
+            font-size: 8rem;
+            margin-bottom: 40px;
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 50px;
+        }
+
+        .info-box p {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .footer {
+            margin-top: 60px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        /* English version */
+        body.en {
+            direction: ltr;
+        }
+
+        body.en h1 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="logo transparent.png" alt="Spool Logo" class="logo">
+        
+        <div class="icon">⚙️</div>
+        
+        <h1>جاري تحديث القائمة</h1>
+        
+        <div class="subtitle">نعمل على تحديث الأسعار</div>
+        
+        <div class="message">
+            نعتذر عن الإزعاج<br>
+            سنعود قريباً بقائمة محدثة
+        </div>
+
+        <div class="info-box">
+            <p>⏰ التحديث سيكتمل قريباً</p>
+            <p>🥗 طلباتك لازالت متاحة عند الكاشير</p>
+            <p>📞 للاستفسار: اسأل موظفينا</p>
+        </div>
+
+        <div class="footer">
+            طازج من المزرعة لطبقك
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh every 2 minutes to check if we're back
+        setTimeout(() => {
+            window.location.reload();
+        }, 120000);
+    </script>
+</body>
+</html>

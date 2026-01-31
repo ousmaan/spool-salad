@@ -1,0 +1,59 @@
+🚀 DEPLOYMENT COMMANDS - Copy and Paste These!
+
+STEP 1: Create Repository on GitHub
+------------------------------------
+1. Go to: https://github.com/new
+2. Repository name: lcd-banners
+3. Select: Public
+4. DO NOT initialize with README
+5. Click "Create repository"
+
+
+STEP 2: Run These Commands
+---------------------------
+Open PowerShell in the lcd-banners folder and run:
+
+git init
+git add .
+git commit -m "Initial deployment of LCD Banners"
+git branch -M main
+git remote add origin https://github.com/YOUR-USERNAME/lcd-banners.git
+git push -u origin main
+
+⚠️ IMPORTANT: Replace YOUR-USERNAME with your actual GitHub username!
+
+
+STEP 3: Enable GitHub Pages
+----------------------------
+1. Go to your repository on GitHub
+2. Click "Settings" tab
+3. Click "Pages" in left sidebar
+4. Source: main branch, / (root)
+5. Click "Save"
+6. Wait 3 minutes
+7. Open: https://YOUR-USERNAME.github.io/lcd-banners/display.html
+
+
+🆘 Don't have Git installed?
+-----------------------------
+Download from: https://git-scm.com/download/win
+Install with default settings
+Then run the commands above
+
+
+🎯 Alternative: Use GitHub Desktop (Easier!)
+--------------------------------------------
+1. Download: https://desktop.github.com
+2. Install and sign in
+3. File → New Repository → Name: lcd-banners
+4. Choose this folder as location
+5. Click "Publish repository"
+6. Uncheck "Keep this code private"
+7. Click "Publish"
+8. Then enable Pages (Step 3 above)
+
+
+✅ After Deployment
+-------------------
+Your site will be live at:
+https://YOUR-USERNAME.github.io/lcd-banners/display.html

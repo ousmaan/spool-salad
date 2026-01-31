@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spool - Digital Menu (BACKUP - DO NOT USE)</title>
+    <!-- Google Fonts for Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/display.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Connection Status Indicator -->
+        <div class="connection-status" :class="{ 'connected': isConnected }">
+            <span class="status-dot"></span>
+        </div>
+
+        <!-- Main Display Container -->
+        <div class="display-container">
+            <!-- Slide Container -->
+            <transition :name="transitionType" mode="out-in">
+                <div class="slide" :key="currentSlide.id" v-if="currentSlide">
+                    
+                    <!-- Background Image with Ken Burns Effect -->
+                    <div class="slide-background" 
+                         :style="{ backgroundImage: `url(${currentSlide.imageUrl})` }"
+                         :class="{ 'loaded': imageLoaded }"
+                         @load="onImageLoad"></div>
+                    <div class="slide-overlay"></div>
+
+                    <!-- Content Based on Type -->
+                    <div class="slide-content">
+                        
+                        <!-- Announcement Type (Grand Opening) -->
+                        <div v-if="currentSlide.type === 'announcement'" class="content-announcement">
+                            <div class="badge grand-opening" :style="{ background: currentSlide.accentColor }">
+                                {{ lang === 'en' ? currentSlide.badge : currentSlide.badgeAr }}
+                            </div>
+                            <h1 class="announcement-title">{{ lang === 'en' ? currentSlide.name : currentSlide.nameAr }}</h1>
+                            <p class="announcement-subtitle">{{ lang === 'en' ? currentSlide.subtitle : currentSlide.subtitleAr }}</p>
+                            <div class="shop-logo">{{ settings.shopName }}</div>
+                        </div>
+
+                        <!-- Product Type -->
+                        <div v-else-if="currentSlide.type === 'product'" class="content-product">
+                            <div class="product-info">
+                                <h2 class="product-name">{{ lang === 'en' ? currentSlide.name : currentSlide.nameAr }}</h2>
+                                <p class="product-description">{{ lang === 'en' ? currentSlide.description : currentSlide.descriptionAr }}</p>
+                                <div class="price-container">
+                                    <span class="price">{{ currentSlide.price }}</span>
+                                    <span class="currency">{{ settings.currency }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Combo Type -->
+                        <div v-else-if="currentSlide.type === 'combo'" class="content-combo">
+                            <div class="badge" v-if="currentSlide.badge" :style="{ background: currentSlide.accentColor }">
+                                {{ lang === 'en' ? currentSlide.badge : currentSlide.badgeAr }}
+                            </div>
+                            <div class="combo-info">
+                                <h2 class="combo-name">{{ lang === 'en' ? currentSlide.name : currentSlide.nameAr }}</h2>
+                                <p class="combo-description">{{ lang === 'en' ? currentSlide.description : currentSlide.descriptionAr }}</p>
+                                <div class="price-row">
+                                    <div class="price-container">
+                                        <span class="price">{{ currentSlide.price }}</span>
+                                        <span class="currency">{{ settings.currency }}</span>
+                                    </div>
+                                    <div class="original-price" v-if="currentSlide.originalPrice">
+                                        <span class="strikethrough">{{ currentSlide.originalPrice }} {{ settings.currency }}</span>
+                                    </div>
+                                </div>
+                                <div class="savings" v-if="currentSlide.originalPrice">
+                                    {{ lang === 'en' ? 'Save' : 'وفر' }} {{ currentSlide.originalPrice - currentSlide.price }} {{ settings.currency }}!
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Promotion Type -->
+                        <div v-else-if="currentSlide.type === 'promotion'" class="content-promotion">
+                            <div class="badge" v-if="currentSlide.badge" :style="{ background: currentSlide.accentColor }">
+                                {{ lang === 'en' ? currentSlide.badge : currentSlide.badgeAr }}
+                            </div>
+                            <div class="promo-info">
+                                <h2 class="promo-name">{{ lang === 'en' ? currentSlide.name : currentSlide.nameAr }}</h2>
+                                <p class="promo-description">{{ lang === 'en' ? currentSlide.description : currentSlide.descriptionAr }}</p>
+                                <div class="price-container" v-if="currentSlide.price">
+                                    <span class="price-prefix">{{ lang === 'en' ? 'Starting at' : 'ابتداءً من' }}</span>
+                                    <span class="price">{{ currentSlide.price }}</span>
+                                    <span class="currency">{{ settings.currency }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Footer with Logo and Tagline -->
+                    <div class="slide-footer">
+                        <img src="logo transparent.png" alt="Spool Logo" class="footer-logo">
+                        <div class="footer-tagline">{{ lang === 'en' ? settings.tagline : settings.taglineAr }}</div>
+                    </div>
+
+                </div>
+            </transition>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-bar">
+            <div class="progress-fill" :style="{ width: progressWidth + '%' }"></div>
+        </div>
+    </div>
+
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="assets/js/display.js"></script>
+</body>
+</html>

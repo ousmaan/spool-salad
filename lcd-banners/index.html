@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCD Banners - Digital Menu Display</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #2d5016 0%, #1a3a0f 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 50px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 20px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-display {
+            background: #d4af37;
+            color: #1a1a1a;
+        }
+        
+        .btn-display:hover {
+            background: #c29d2f;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 30px rgba(212, 175, 55, 0.4);
+        }
+        
+        .btn-admin {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-admin:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .info {
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .info p {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .info ul {
+            list-style: none;
+            margin-top: 20px;
+        }
+        
+        .info li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info li:last-child {
+            border-bottom: none;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .tagline { font-size: 1.2rem; }
+            .btn { padding: 15px 30px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📺 LCD Banners</h1>
+        <p class="tagline">Professional Digital Menu Display System</p>
+        
+        <div class="buttons">
+            <a href="display.html" class="btn btn-display">
+                📺 Open Display
+            </a>
+            <a href="admin.html" class="btn btn-admin">
+                🎛️ Admin Panel
+            </a>
+        </div>
+        
+        <div class="info">
+            <h2>🚀 Quick Start</h2>
+            <ul>
+                <li>📺 <strong>Display</strong> - Open on your LCD screen (landscape, fullscreen)</li>
+                <li>🎛️ <strong>Admin</strong> - Edit products, combos, and offers</li>
+                <li>💾 <strong>Export JSON</strong> - Download updated products.json from admin</li>
+                <li>📁 <strong>Replace File</strong> - Update data/products.json with exported file</li>
+                <li>🔄 <strong>Auto-Refresh</strong> - Display updates automatically every 60 seconds</li>
+            </ul>
+            
+            <p style="margin-top: 30px;">
+                📖 See <strong>README.md</strong> for detailed documentation
+            </p>
+        </div>
+    </div>
+</body>
+</html>
