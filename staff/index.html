@@ -938,6 +938,39 @@
             }
         }
 
+        /* Category Tabs */
+        .category-tabs-staff {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-tab-staff {
+            flex: 1;
+            background: var(--white);
+            color: var(--text);
+            border: 2px solid var(--border-color);
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-tab-staff:hover {
+            border-color: var(--primary);
+            background: var(--light);
+            transform: translateY(-2px);
+        }
+
+        .category-tab-staff.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
         /* Main Grid */
         .main-grid {
             display: grid;
@@ -1087,6 +1120,43 @@
 
         .salad-card.selected .salad-description {
             opacity: 0.95;
+        }
+
+        /* Juice Size Buttons */
+        .juice-size-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .juice-size-btn {
+            flex: 1;
+            background: var(--light);
+            border: 2px solid var(--primary);
+            color: var(--text);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .juice-size-btn:hover {
+            background: rgba(45, 80, 22, 0.1);
+            transform: scale(1.05);
+        }
+
+        .juice-size-btn.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: 700;
+        }
+
+        .juice-size-btn strong {
+            display: block;
+            margin-top: 5px;
+            font-size: 1.1em;
         }
 
         /* Toppings */
@@ -1638,8 +1708,20 @@
             <div class="main-grid">
                 <!-- Left Panel: Product Selection -->
                 <div>
+                    <!-- Category Tabs -->
+                    <div class="category-tabs-staff">
+                        <button 
+                            v-for="category in config.categories" 
+                            :key="category.id"
+                            class="category-tab-staff"
+                            :class="{ active: selectedCategory === category.id }"
+                            @click="selectCategory(category.id)">
+                            {{ category.emoji }} {{ category[lang === 'ar' ? 'nameAr' : 'name'] }}
+                        </button>
+                    </div>
+
                     <!-- Base Salads -->
-                    <div class="card">
+                    <div class="card" v-if="selectedCategory === 'salad'">
                         <h2 class="card-title">
                             {{ lang === 'ar' ? 'اختر السلطة الأساسية' : 'Select Base Salad' }}
                         </h2>
@@ -1658,8 +1740,38 @@
                         </div>
                     </div>
 
+                    <!-- Fresh Juices -->
+                    <div class="card" v-if="selectedCategory === 'juice'">
+                        <h2 class="card-title">
+                            {{ lang === 'ar' ? 'العصائر الطازجة' : 'Fresh Juices' }}
+                        </h2>
+                        <div class="salads-grid">
+                            <div 
+                                v-for="juice in config.juices" 
+                                :key="juice.id"
+                                class="salad-card juice-card"
+                            >
+                                <div class="salad-name">{{ juice[lang === 'ar' ? 'nameAr' : 'name'] }}</div>
+                                <div class="salad-description">{{ juice[lang === 'ar' ? 'descriptionAr' : 'description'] }}</div>
+                                
+                                <!-- Size Buttons -->
+                                <div class="juice-size-buttons">
+                                    <button 
+                                        v-for="size in juice.sizes" 
+                                        :key="size.id"
+                                        class="juice-size-btn"
+                                        :class="{ selected: selectedProduct?.id === juice.id && selectedSize?.id === size.id }"
+                                        @click="selectJuice(juice, size)">
+                                        {{ size[lang === 'ar' ? 'nameAr' : 'name'] }}<br>
+                                        <strong>{{ size.price }} {{ config.shop.currency }}</strong>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Toppings -->
-                    <div class="card toppings-section" v-if="selectedSalad" id="toppings-section">
+                    <div class="card toppings-section" v-if="selectedSalad && selectedCategory === 'salad'" id="toppings-section">
                         <h2 class="card-title">
                             {{ lang === 'ar' ? 'ضيّف الإضافات' : 'Add Toppings' }}
                         </h2>
@@ -1692,20 +1804,23 @@
                             {{ lang === 'ar' ? 'ملخص الطلب' : 'Order Summary' }}
                         </h2>
 
-                        <div v-if="!selectedSalad" class="empty-state">
+                        <div v-if="!selectedProduct && !selectedSalad" class="empty-state">
                             <div class="empty-state-icon">🥗</div>
-                            <p>{{ lang === 'ar' ? 'اختر سلطة عشان نبدأ' : 'Select a salad to start' }}</p>
+                            <p>{{ lang === 'ar' ? 'اختر منتج عشان نبدأ' : 'Select a product to start' }}</p>
                         </div>
 
                         <div v-else>
-                            <!-- Base Salad -->
+                            <!-- Product -->
                             <div class="summary-item">
-                                <span class="item-name">{{ selectedSalad.nameAr }}</span>
-                                <span class="item-price">{{ selectedSalad.price }} {{ config.shop.currency }}</span>
+                                <span class="item-name">
+                                    {{ selectedProduct ? selectedProduct[lang === 'ar' ? 'nameAr' : 'name'] : selectedSalad[lang === 'ar' ? 'nameAr' : 'name'] }}
+                                    {{ selectedSize ? ' - ' + selectedSize[lang === 'ar' ? 'nameAr' : 'name'] : '' }}
+                                </span>
+                                <span class="item-price">{{ currentProductPrice }} {{ config.shop.currency }}</span>
                             </div>
 
-                            <!-- Toppings -->
-                            <div v-for="topping in selectedToppings" :key="topping.id" class="summary-item">
+                            <!-- Toppings (salad only) -->
+                            <div v-if="selectedCategory === 'salad'" v-for="topping in selectedToppings" :key="topping.id" class="summary-item">
                                 <div class="item-details">
                                     <span class="item-name">
                                         {{ topping.nameAr }}
@@ -1929,8 +2044,29 @@
                             }
                         ]
                     },
+                    categories: [
+                        {id: "salad", name: "Salads", nameAr: "السلطات", emoji: "🥗"},
+                        {id: "juice", name: "Fresh Juices", nameAr: "العصائر الطازجة", emoji: "🥤"}
+                    ],
+                    juices: [
+                        {
+                            id: "fresh-juice",
+                            itemCode: "600001",
+                            name: "Fresh Juice",
+                            nameAr: "عصير طازج",
+                            sizes: [
+                                {id: "medium", name: "Medium", nameAr: "وسط", price: 10},
+                                {id: "large", name: "Large", nameAr: "كبير", price: 13}
+                            ],
+                            description: "Fresh and healthy juice",
+                            descriptionAr: "عصير طازج وصحي"
+                        }
+                    ],
                     lang: 'ar',
+                    selectedCategory: 'salad',
+                    selectedProduct: null,
                     selectedSalad: null,
+                    selectedSize: null,
                     toppings: {},
                     showModal: false,
                     notification: null,
@@ -1951,11 +2087,22 @@
                     }
                     return selected;
                 },
+                currentProductPrice() {
+                    if (this.selectedCategory === 'juice' && this.selectedSize) {
+                        return this.selectedSize.price;
+                    } else if (this.selectedSalad) {
+                        return this.selectedSalad.price;
+                    } else if (this.selectedProduct) {
+                        return this.selectedProduct.price;
+                    }
+                    return 0;
+                },
                 totalPrice() {
-                    if (!this.selectedSalad) return 0;
-                    let total = this.selectedSalad.price;
-                    for (const topping of this.selectedToppings) {
-                        total += topping.price * this.toppings[topping.id];
+                    let total = this.currentProductPrice;
+                    if (this.selectedCategory === 'salad') {
+                        for (const topping of this.selectedToppings) {
+                            total += topping.price * this.toppings[topping.id];
+                        }
                     }
                     return total;
                 },
@@ -1976,8 +2123,22 @@
                     document.documentElement.lang = this.lang;
                     document.documentElement.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
                 },
+                selectCategory(categoryId) {
+                    this.selectedCategory = categoryId;
+                    this.selectedProduct = null;
+                    this.selectedSalad = null;
+                    this.selectedSize = null;
+                    this.toppings = {};
+                },
+                selectJuice(juice, size) {
+                    this.selectedProduct = juice;
+                    this.selectedSize = size;
+                    this.selectedCategory = 'juice';
+                },
                 selectBaseSalad(salad) {
                     this.selectedSalad = salad;
+                    this.selectedProduct = salad;
+                    this.selectedCategory = 'salad';
                     // Auto-scroll to toppings title (with offset for sticky header)
                     this.$nextTick(() => {
                         setTimeout(() => {

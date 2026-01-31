@@ -15,6 +15,9 @@
     <link rel="apple-touch-icon" href="/assets/images/icon-192x192.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/icon-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/assets/images/icon-512x512.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
@@ -93,7 +96,7 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg-main);
             min-height: 100vh;
             padding: 0;
@@ -938,6 +941,78 @@
             }
         }
 
+        /* Category Tabs */
+        .category-tabs-staff {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-tab-staff {
+            flex: 1;
+            background: var(--white);
+            color: var(--text);
+            border: 2px solid var(--border-color);
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            font-family: 'Cairo', 'Arial', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-tab-staff:hover {
+            border-color: var(--primary);
+            background: var(--light);
+            transform: translateY(-2px);
+        }
+
+        .category-tab-staff.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        /* Juice Size Buttons */
+        .juice-size-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .juice-size-btn {
+            flex: 1;
+            background: var(--light);
+            border: 2px solid var(--primary);
+            color: var(--text);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Cairo', 'Arial', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .juice-size-btn:hover {
+            background: rgba(45, 80, 22, 0.1);
+            transform: scale(1.05);
+        }
+
+        .juice-size-btn.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: 700;
+        }
+
+        .juice-size-btn strong {
+            display: block;
+            margin-top: 5px;
+            font-size: 1.1em;
+        }
+
         /* Main Grid */
         .main-grid {
             display: grid;
@@ -1321,6 +1396,7 @@
             border-radius: 14px;
             font-size: 1.25em;
             font-weight: 700;
+            font-family: 'Cairo', 'Arial', sans-serif;
             cursor: pointer;
             transition: var(--transition);
             box-shadow: var(--shadow-md);
@@ -1351,6 +1427,7 @@
         .btn-primary {
             background: var(--success);
             color: white;
+            font-family: 'Cairo', 'Arial', sans-serif;
         }
 
         .btn-primary:hover {
@@ -1366,6 +1443,7 @@
         .btn-danger {
             background: var(--warning);
             color: white;
+            font-family: 'Cairo', 'Arial', sans-serif;
         }
 
         .btn-danger:hover {
@@ -1638,8 +1716,20 @@
             <div class="main-grid">
                 <!-- Left Panel: Product Selection -->
                 <div>
+                    <!-- Category Tabs -->
+                    <div class="category-tabs-staff">
+                        <button 
+                            v-for="category in config.categories" 
+                            :key="category.id"
+                            class="category-tab-staff"
+                            :class="{ active: selectedCategory === category.id }"
+                            @click="selectCategory(category.id)">
+                            {{ category.emoji }} {{ category[lang === 'ar' ? 'nameAr' : 'name'] }}
+                        </button>
+                    </div>
+
                     <!-- Base Salads -->
-                    <div class="card">
+                    <div class="card" v-if="selectedCategory === 'salad'">
                         <h2 class="card-title">
                             {{ lang === 'ar' ? 'اختر السلطة الأساسية' : 'Select Base Salad' }}
                         </h2>
@@ -1658,8 +1748,38 @@
                         </div>
                     </div>
 
+                    <!-- Fresh Juices -->
+                    <div class="card" v-if="selectedCategory === 'juice'">
+                        <h2 class="card-title">
+                            {{ lang === 'ar' ? 'العصائر الطازجة' : 'Fresh Juices' }}
+                        </h2>
+                        <div class="salads-grid">
+                            <div 
+                                v-for="juice in config.juices" 
+                                :key="juice.id"
+                                class="salad-card juice-card"
+                            >
+                                <div class="salad-name">{{ juice[lang === 'ar' ? 'nameAr' : 'name'] }}</div>
+                                <div class="salad-description">{{ juice[lang === 'ar' ? 'descriptionAr' : 'description'] }}</div>
+                                
+                                <!-- Size Buttons -->
+                                <div class="juice-size-buttons">
+                                    <button 
+                                        v-for="size in juice.sizes" 
+                                        :key="size.id"
+                                        class="juice-size-btn"
+                                        :class="{ selected: selectedProduct?.id === juice.id && selectedSize?.id === size.id }"
+                                        @click="selectJuice(juice, size)">
+                                        {{ size[lang === 'ar' ? 'nameAr' : 'name'] }}<br>
+                                        <strong>{{ size.price }} {{ config.shop.currency }}</strong>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Toppings -->
-                    <div class="card toppings-section" v-if="selectedSalad" id="toppings-section">
+                    <div class="card toppings-section" v-if="selectedSalad && selectedCategory === 'salad'" id="toppings-section">
                         <h2 class="card-title">
                             {{ lang === 'ar' ? 'ضيّف الإضافات' : 'Add Toppings' }}
                         </h2>
@@ -1692,20 +1812,23 @@
                             {{ lang === 'ar' ? 'ملخص الطلب' : 'Order Summary' }}
                         </h2>
 
-                        <div v-if="!selectedSalad" class="empty-state">
+                        <div v-if="!selectedSalad && !selectedProduct" class="empty-state">
                             <div class="empty-state-icon">🥗</div>
-                            <p>{{ lang === 'ar' ? 'اختر سلطة عشان نبدأ' : 'Select a salad to start' }}</p>
+                            <p>{{ lang === 'ar' ? 'اختر منتج عشان نبدأ' : 'Select a product to start' }}</p>
                         </div>
 
                         <div v-else>
-                            <!-- Base Salad -->
+                            <!-- Product -->
                             <div class="summary-item">
-                                <span class="item-name">{{ selectedSalad.nameAr }}</span>
-                                <span class="item-price">{{ selectedSalad.price }} {{ config.shop.currency }}</span>
+                                <span class="item-name">
+                                    {{ selectedProduct ? selectedProduct[lang === 'ar' ? 'nameAr' : 'name'] : selectedSalad[lang === 'ar' ? 'nameAr' : 'name'] }}
+                                    {{ selectedSize ? ' - ' + selectedSize[lang === 'ar' ? 'nameAr' : 'name'] : '' }}
+                                </span>
+                                <span class="item-price">{{ currentProductPrice }} {{ config.shop.currency }}</span>
                             </div>
 
-                            <!-- Toppings -->
-                            <div v-for="topping in selectedToppings" :key="topping.id" class="summary-item">
+                            <!-- Toppings (salad only) -->
+                            <div v-if="selectedCategory === 'salad'" v-for="topping in selectedToppings" :key="topping.id" class="summary-item">
                                 <div class="item-details">
                                     <span class="item-name">
                                         {{ topping.nameAr }}
@@ -1744,59 +1867,47 @@
             <div class="modal" style="max-width: 400px;">
                 <h3 class="modal-header">{{ lang === 'ar' ? 'معاينة الفاتورة' : 'Receipt Preview' }}</h3>
                 
-                <div class="label-preview" style="background: white; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Courier New', monospace;">
-                    <!-- Logo -->
-                    <div style="text-align: center; margin-bottom: 10px;">
-                        <img src="logo transparent.png" style="max-width: 120px; height: auto;" />
-                    </div>
-                    
-                    <!-- Header -->
+                <div class="label-preview" style="background: white; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-family: 'Cairo', 'Arial', sans-serif;">
+                    <!-- Text-Based Logo Header -->
                     <div style="text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-                        <div style="font-weight: bold; font-size: 1.2em; margin-bottom: 5px;">{{ config.shop.nameAr }}</div>
+                        <div style="font-weight: bold; font-size: 1.3em; margin-bottom: 3px;">★ {{ config.shop.nameAr }} ★</div>
+                        <div style="font-size: 0.75em; color: #666; margin-bottom: 8px;">{{ config.shop.taglineAr }}</div>
                         <div style="font-size: 0.85em; color: #666;">{{ currentDateTime }}</div>
-                        <div style="font-size: 0.85em; color: #666;">رقم الطلب: {{ barcodeData }}</div>
-                    </div>
-                    
-                    <!-- Order Header -->
-                    <div style="text-align: center; background: #000; color: #fff; padding: 5px; margin: 10px 0; font-weight: bold;">
-                        تفاصيل الطلب
+                        <div style="font-size: 0.85em; color: #666;">#{{ barcodeData }}</div>
                     </div>
                     
                     <!-- Items List -->
                     <table style="width: 100%; margin: 10px 0; font-size: 0.9em;">
                         <tr style="border-bottom: 1px dotted #ccc;">
-                            <td style="text-align: right; padding: 5px 5px 5px 0;">{{ selectedSalad.nameAr }}</td>
-                            <td style="text-align: left; padding: 5px 0 5px 5px; font-weight: bold;">{{ selectedSalad.price }} {{ config.shop.currency }}</td>
+                            <td style="text-align: right; padding: 5px 5px 5px 0;">
+                                {{ selectedProduct ? selectedProduct[lang === 'ar' ? 'nameAr' : 'name'] : selectedSalad[lang === 'ar' ? 'nameAr' : 'name'] }}
+                                {{ selectedSize ? ' - ' + selectedSize[lang === 'ar' ? 'nameAr' : 'name'] : '' }}
+                            </td>
+                            <td style="text-align: left; padding: 5px 0 5px 5px; font-weight: bold;">{{ currentProductPrice }} {{ config.shop.currency }}</td>
                         </tr>
-                        <tr v-for="topping in selectedToppings" :key="topping.id" style="border-bottom: 1px dotted #ccc;">
-                            <td style="text-align: right; padding: 5px 5px 5px 0;">  {{ topping.nameAr }} × {{ toppings[topping.id] }}</td>
-                            <td style="text-align: left; padding: 5px 0 5px 5px; font-weight: bold;">{{ topping.price * toppings[topping.id] }} {{ config.shop.currency }}</td>
+                        <tr v-if="selectedCategory === 'salad' && selectedToppings.length > 0" style="border-bottom: 1px dotted #ccc;">
+                            <td style="text-align: right; padding: 5px 5px 5px 0;">{{ lang === 'ar' ? 'الإضافات' : 'Toppings' }}</td>
+                            <td style="text-align: left; padding: 5px 0 5px 5px; font-weight: bold;">{{ selectedToppings.reduce((sum, t) => sum + (t.price * toppings[t.id]), 0) }} {{ config.shop.currency }}</td>
                         </tr>
                     </table>
                     
                     <!-- Total -->
                     <div style="border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 10px 0; margin: 10px 0;">
                         <div style="display: flex; justify-content: space-between; font-size: 1.1em; font-weight: bold;">
-                            <span>المجموع الكلي</span>
+                            <span>{{ lang === 'ar' ? 'المجموع' : 'Total' }}</span>
                             <span>{{ totalPrice }} {{ config.shop.currency }}</span>
                         </div>
                     </div>
                     
                     <!-- Barcode -->
-                    <div style="border-top: 2px dashed #000; border-bottom: 2px dashed #000; padding: 10px 0; margin: 10px 0;">
-                        <div style="text-align: center; font-size: 0.85em; color: #666; margin-bottom: 5px;">Order Barcode | باركود الطلب</div>
-                        <div style="display: flex; justify-content: center;">
-                            <svg id="barcode"></svg>
-                        </div>
-                        <div style="text-align: center; font-size: 0.85em; color: #666; margin-top: 5px;">{{ barcodeData }}</div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <svg id="barcode"></svg>
                     </div>
                     
-                    <!-- Footer -->
-                    <div style="text-align: center; border-top: 2px dashed #000; padding-top: 10px; margin-top: 10px;">
-                        <div style="font-weight: bold; margin-bottom: 5px;">شكراً لزيارتكم</div>
-                        <div style="font-weight: bold; margin-bottom: 5px;">Thank You!</div>
-                        <div style="font-size: 0.85em; color: #666;">نتمنى لك وجبة شهية</div>
-                        <div style="font-size: 0.85em; color: #666;">Enjoy Your Meal!</div>
+                    <!-- Footer with Instructions -->
+                    <div style="text-align: center; margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 8px;">
+                        <div style="font-size: 0.95em; margin-bottom: 8px; line-height: 1.5;">يُرجى إظهار هذا الإيصال للكاشير عند الدفع</div>
+                        <div style="font-weight: bold; font-size: 1.1em;">شكراً لك ♥</div>
                     </div>
                 </div>
 
@@ -1834,13 +1945,31 @@
                             "primaryColor": "#2d5016",
                             "accentColor": "#d4af37"
                         },
+                        "categories": [
+                            {id: "salad", name: "Salads", nameAr: "السلطات", emoji: "🥗"},
+                            {id: "juice", name: "Fresh Juices", nameAr: "العصائر الطازجة", emoji: "🥤"}
+                        ],
                         "baseSalads": [
-                            {"id": "quinoa-tabbouleh", "itemCode": "500001", "name": "Quinoa Tabbouleh Salad", "nameAr": "سلطة كينوا تبولة", "price": 19, "description": "Quinoa with traditional tabbouleh flavors", "descriptionAr": "كينوا مع نكهات التبولة التقليدية"},
-                            {"id": "date-salad", "itemCode": "500002", "name": "Date Salad", "nameAr": "سلطة التمر", "price": 19, "description": "Fresh salad with dates", "descriptionAr": "سلطة طازجة مع التمر"},
-                            {"id": "fusilli-broccoli", "itemCode": "500003", "name": "Fusilli Broccoli Salad", "nameAr": "سلطة فيوزلي بروكلي", "price": 20, "description": "Fusilli pasta with fresh broccoli", "descriptionAr": "معكرونة فيوزلي مع بروكلي طازج"},
-                            {"id": "tuna-salad", "itemCode": "500004", "name": "Tuna Salad", "nameAr": "سلطة تونة", "price": 19, "description": "Fresh tuna salad", "descriptionAr": "سلطة تونة طازجة"},
-                            {"id": "caesar", "itemCode": "500006", "name": "Caesar Salad", "nameAr": "سلطة السيزر", "price": 19, "description": "Classic Caesar with romaine and parmesan", "descriptionAr": "سيزر كلاسيكية مع خس روماني وبارميزان"},
-                            {"id": "custom", "itemCode": "500005", "name": "Build Your Own", "nameAr": "سلطة حسب الطلب", "price": 13, "description": "Create your own custom salad", "descriptionAr": "أنشئ سلطتك الخاصة"}
+                            {"id": "quinoa-tabbouleh", "itemCode": "500001", "name": "Quinoa Tabbouleh Salad", "nameAr": "سلطة كينوا تبولة", "price": 19, "description": "كينوا مع نكهات التبولة التقليدية", "descriptionAr": "كينوا مع نكهات التبولة التقليدية"},
+                            {"id": "date-salad", "itemCode": "500002", "name": "Date Salad", "nameAr": "سلطة التمر", "price": 19, "description": "سلطة طازجة مع التمر", "descriptionAr": "سلطة طازجة مع التمر"},
+                            {"id": "fusilli-broccoli", "itemCode": "500003", "name": "Fusilli Broccoli Salad", "nameAr": "سلطة فيوزلي بروكلي", "price": 20, "description": "معكرونة فيوزلي مع بروكلي طازج", "descriptionAr": "معكرونة فيوزلي مع بروكلي طازج"},
+                            {"id": "tuna-salad", "itemCode": "500004", "name": "Tuna Salad", "nameAr": "سلطة تونة", "price": 19, "description": "سلطة تونة طازجة", "descriptionAr": "سلطة تونة طازجة"},
+                            {"id": "caesar", "itemCode": "500006", "name": "Caesar Salad", "nameAr": "سلطة السيزر", "price": 19, "description": "سيزر كلاسيكية مع خس روماني وبارميزان", "descriptionAr": "سيزر كلاسيكية مع خس روماني وبارميزان"},
+                            {"id": "custom", "itemCode": "500005", "name": "Build Your Own", "nameAr": "سلطة حسب الطلب", "price": 13, "description": "أنشئ سلطتك الخاصة", "descriptionAr": "أنشئ سلطتك الخاصة"}
+                        ],
+                        "juices": [
+                            {
+                                "id": "fresh-juice",
+                                "itemCode": "600001",
+                                "name": "Fresh Juice",
+                                "nameAr": "عصير طازج",
+                                "sizes": [
+                                    {"id": "medium", "name": "Medium", "nameAr": "وسط", "price": 10},
+                                    {"id": "large", "name": "Large", "nameAr": "كبير", "price": 13}
+                                ],
+                                "description": "Fresh and healthy juice",
+                                "descriptionAr": "عصير طازج وصحي"
+                            }
                         ],
                         "toppings": [
                             {
@@ -1891,12 +2020,15 @@
                         ]
                     },
                     lang: 'ar',
+                    selectedCategory: 'salad',
+                    selectedProduct: null,
                     selectedSalad: null,
+                    selectedSize: null,
                     toppings: {},
                     showModal: false,
                     notification: null,
                     sidebarOpen: false,
-                    showLanding: true,
+                    showLanding: false,
                     showAnimation: false
                 };
             },
@@ -1912,18 +2044,30 @@
                     }
                     return selected;
                 },
+                currentProductPrice() {
+                    if (this.selectedCategory === 'juice' && this.selectedSize) {
+                        return this.selectedSize.price;
+                    } else if (this.selectedSalad) {
+                        return this.selectedSalad.price;
+                    } else if (this.selectedProduct) {
+                        return this.selectedProduct.price;
+                    }
+                    return 0;
+                },
                 totalPrice() {
-                    if (!this.selectedSalad) return 0;
-                    let total = this.selectedSalad.price;
-                    for (const topping of this.selectedToppings) {
-                        total += topping.price * this.toppings[topping.id];
+                    let total = this.currentProductPrice;
+                    if (this.selectedCategory === 'salad') {
+                        for (const topping of this.selectedToppings) {
+                            total += topping.price * this.toppings[topping.id];
+                        }
                     }
                     return total;
                 },
                 barcodeData() {
                     // Format: NXXXXXXPPPPPNNNNNN (18 digits)
-                    // Use itemCode from selected salad instead of shop.productCode
-                    const itemCode = this.selectedSalad?.itemCode?.padStart(6, '0') || '000001';
+                    // Use itemCode from selected product
+                    const product = this.selectedProduct || this.selectedSalad;
+                    const itemCode = product?.itemCode?.padStart(6, '0') || '000001';
                     const priceInHalalas = Math.round(this.totalPrice * 100);
                     const priceStr = priceInHalalas.toString().padStart(5, '0');
                     
@@ -1944,8 +2088,22 @@
                     document.documentElement.lang = this.lang;
                     document.documentElement.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
                 },
+                selectCategory(categoryId) {
+                    this.selectedCategory = categoryId;
+                    this.selectedProduct = null;
+                    this.selectedSalad = null;
+                    this.selectedSize = null;
+                    this.toppings = {};
+                },
+                selectJuice(juice, size) {
+                    this.selectedProduct = juice;
+                    this.selectedSize = size;
+                    this.selectedCategory = 'juice';
+                },
                 selectBaseSalad(salad) {
                     this.selectedSalad = salad;
+                    this.selectedProduct = salad;
+                    this.selectedCategory = 'salad';
                     // Auto-scroll to toppings title (with offset for sticky header)
                     this.$nextTick(() => {
                         setTimeout(() => {
@@ -1999,11 +2157,12 @@
                     }, 5000); // 5 seconds animation
                 },
                 clearOrder() {
-                    if (confirm(this.lang === 'ar' ? 'متأكد تبي تمسح الطلب؟' : 'Clear the order?')) {
-                        this.selectedSalad = null;
-                        this.toppings = {};
-                        this.showNotification(this.lang === 'ar' ? 'تم مسح الطلب' : 'Order cleared');
-                    }
+                    this.selectedCategory = 'salad';
+                    this.selectedProduct = null;
+                    this.selectedSalad = null;
+                    this.selectedSize = null;
+                    this.toppings = {};
+                    this.showNotification(this.lang === 'ar' ? 'تم مسح الطلب' : 'Order cleared');
                 },
                 showPrintPreview() {
                     this.showModal = true;
@@ -2040,34 +2199,40 @@
                     
                     // Get barcode as SVG string
                     const svgData = new XMLSerializer().serializeToString(svg);
-                    const saladName = this.selectedSalad.nameAr;
+                    const isRTL = this.lang === 'ar';
+                    const product = this.selectedProduct || this.selectedSalad;
+                    const productName = product[isRTL ? 'nameAr' : 'name'];
+                    const productDisplay = this.selectedSize ? `${productName} - ${this.selectedSize[isRTL ? 'nameAr' : 'name']}` : productName;
                     const totalPrice = this.totalPrice;
                     const currency = this.config.shop.currency;
-                    const isRTL = this.lang === 'ar';
                     
-                    // Build itemized list with toppings
+                    // Build itemized list
                     let itemsList = '';
-                    let subtotal = this.selectedSalad.price;
+                    let subtotal = this.currentProductPrice;
                     
-                    // Add base salad
+                    // Add product
                     itemsList += `
                         <tr>
-                            <td class="item-name">${saladName}</td>
-                            <td class="item-price">${this.selectedSalad.price} ${currency}</td>
+                            <td class="item-name">${productDisplay}</td>
+                            <td class="item-price">${this.currentProductPrice} ${currency}</td>
                         </tr>
                     `;
                     
-                    // Add toppings
-                    this.selectedToppings.forEach(topping => {
-                        const qty = this.toppings[topping.id];
-                        const itemTotal = topping.price * qty;
+                    // Add toppings total (only for salads) - single line instead of individual items
+                    if (this.selectedCategory === 'salad' && this.selectedToppings.length > 0) {
+                        let toppingsTotal = 0;
+                        this.selectedToppings.forEach(topping => {
+                            const qty = this.toppings[topping.id];
+                            const itemTotal = topping.price * qty;
+                            toppingsTotal += itemTotal;
+                        });
                         itemsList += `
                             <tr>
-                                <td class="item-name">  ${topping.nameAr} × ${qty}</td>
-                                <td class="item-price">${itemTotal} ${currency}</td>
+                                <td class="item-name">${isRTL ? 'الإضافات' : 'Toppings'}</td>
+                                <td class="item-price">${toppingsTotal} ${currency}</td>
                             </tr>
                         `;
-                    });
+                    }
                     
                     // Create print-only styles for 80mm receipt printer
                     const printStyles = `
@@ -2095,7 +2260,7 @@
                                 margin: 0;
                                 padding: 0;
                                 background: white;
-                                font-family: 'Courier New', 'Arial', monospace;
+                                font-family: 'Cairo', 'Arial', sans-serif;
                             }
                             #print-content {
                                 width: 74mm;
@@ -2114,20 +2279,34 @@
                             }
                             .receipt-header {
                                 text-align: center;
-                                margin-bottom: 4mm;
-                                padding-bottom: 3mm;
+                                margin-bottom: 3mm;
+                                padding-bottom: 2mm;
                                 border-bottom: 2px dashed #000;
                             }
                             .shop-name {
-                                font-size: 18pt;
+                                font-size: 16pt;
                                 font-weight: bold;
+                                margin-bottom: 1mm;
+                                letter-spacing: 0.5px;
+                            }
+                            .shop-tagline {
+                                font-size: 8pt;
                                 margin-bottom: 2mm;
-                                letter-spacing: 1px;
+                                color: #555;
                             }
                             .shop-info {
-                                font-size: 9pt;
-                                margin: 1mm 0;
+                                font-size: 8pt;
+                                margin: 0.5mm 0;
                                 color: #333;
+                            }
+                            .instructions {
+                                font-size: 9pt;
+                                margin-bottom: 2mm;
+                                padding: 2mm;
+                                background: #f0f0f0;
+                                border-radius: 2mm;
+                                text-align: center;
+                                line-height: 1.4;
                             }
                             .order-header {
                                 text-align: center;
@@ -2140,12 +2319,12 @@
                             }
                             .items-table {
                                 width: 100%;
-                                margin: 3mm 0;
+                                margin: 2mm 0;
                                 border-collapse: collapse;
                             }
                             .items-table td {
-                                padding: 2mm 0;
-                                font-size: 11pt;
+                                padding: 1.5mm 0;
+                                font-size: 10pt;
                                 border-bottom: 1px dotted #ccc;
                             }
                             .item-name {
@@ -2231,25 +2410,18 @@
                     const shopName = this.config.shop.nameAr;
                     const orderNum = this.barcodeData;
                     
-                    // Create print content element
+                    // Create print content element - Compact 80x210mm receipt
                     const printDiv = `
                         <div id="print-content">
-                            <!-- Logo -->
-                            <div class="receipt-logo">
-                                <img src="logo transparent.png" alt="Logo" />
-                            </div>
-                            
-                            <!-- Header -->
+                            <!-- Text-Based Logo Header -->
                             <div class="receipt-header">
-                                <div class="shop-name">${shopName}</div>
-                                <div class="shop-info">${dateStr}</div>
-                                <div class="shop-info">${timeStr}</div>
-                                <div class="shop-info">رقم الطلب: ${orderNum}</div>
+                                <div class="shop-name">★ ${shopName} ★</div>
+                                <div class="shop-tagline">لكل ما تنتجه الحقول</div>
+                                <div class="shop-info">${dateStr} ${timeStr}</div>
+                                <div class="shop-info">#${orderNum}</div>
                             </div>
                             
                             <!-- Order Items -->
-                            <div class="order-header">تفاصيل الطلب</div>
-                            
                             <table class="items-table">
                                 ${itemsList}
                             </table>
@@ -2257,26 +2429,20 @@
                             <!-- Total -->
                             <div class="total-section">
                                 <div class="total-line">
-                                    <span>المجموع الكلي</span>
+                                    <span>المجموع</span>
                                     <span>${totalPrice} ${currency}</span>
                                 </div>
                             </div>
                             
                             <!-- Barcode -->
                             <div class="barcode-section">
-                                <div class="barcode-label">Order Barcode | باركود الطلب</div>
-                                <div class="barcode-container">
-                                    ${svgData}
-                                </div>
-                                <div class="barcode-label">${orderNum}</div>
+                                ${svgData}
                             </div>
                             
-                            <!-- Footer -->
+                            <!-- Footer with Instructions -->
                             <div class="receipt-footer">
-                                <div class="thank-you">شكراً لزيارتكم</div>
-                                <div class="thank-you">Thank You!</div>
-                                <div class="footer-info">نتمنى لك وجبة شهية</div>
-                                <div class="footer-info">Enjoy Your Meal!</div>
+                                <div class="instructions">يُرجى إظهار هذا الإيصال للكاشير عند الدفع</div>
+                                <div class="thank-you">شكراً لك ♥</div>
                             </div>
                         </div>
                     `;

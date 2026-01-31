@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel | لوحة التحكم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <!-- PWA Meta Tags -->
     <meta name="description" content="Spool Salad Admin Panel - Configuration System">
@@ -34,7 +37,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, var(--light-green) 0%, #ffffff 100%);
             min-height: 100vh;
             padding: 20px;
@@ -315,6 +318,9 @@
                 <div class="tab" :class="{ active: activeTab === 'salads' }" @click="activeTab = 'salads'">
                     {{ lang === 'ar' ? '🥗 السلطات الأساسية' : '🥗 Base Salads' }}
                 </div>
+                <div class="tab" :class="{ active: activeTab === 'juices' }" @click="activeTab = 'juices'">
+                    {{ lang === 'ar' ? '🥤 العصائر' : '🥤 Juices' }}
+                </div>
                 <div class="tab" :class="{ active: activeTab === 'toppings' }" @click="activeTab = 'toppings'">
                     {{ lang === 'ar' ? '🍅 الإضافات' : '🍅 Toppings' }}
                 </div>
@@ -463,6 +469,68 @@
                     <button class="btn btn-secondary" @click="addNewSalad">➕ Add New Salad</button>
                     <button class="btn btn-primary" @click="saveConfig">💾 Save Changes</button>
                 </div>
+            </div>
+
+            <!-- Juices Tab -->
+            <div v-if="activeTab === 'juices'" class="card">
+                <h2 class="card-title">{{ lang === 'ar' ? 'إدارة العصائر' : 'Manage Juices' }}</h2>
+                
+                <button class="add-btn" @click="addNewJuice">
+                    {{ lang === 'ar' ? '+ إضافة عصير جديد' : '+ Add New Juice' }}
+                </button>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>{{ lang === 'ar' ? 'المعرف' : 'ID' }}</th>
+                            <th>{{ lang === 'ar' ? 'رمز الصنف' : 'Item Code' }}</th>
+                            <th>{{ lang === 'ar' ? 'الاسم' : 'Name' }}</th>
+                            <th>{{ lang === 'ar' ? 'الاسم بالعربي' : 'Arabic Name' }}</th>
+                            <th>{{ lang === 'ar' ? 'الأحجام والأسعار' : 'Sizes & Prices' }}</th>
+                            <th>{{ lang === 'ar' ? 'الوصف' : 'Description' }}</th>
+                            <th>{{ lang === 'ar' ? 'الوصف بالعربي' : 'Arabic Description' }}</th>
+                            <th>{{ lang === 'ar' ? 'الإجراءات' : 'Actions' }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(juice, index) in config.juices" :key="juice.id">
+                            <td>
+                                <input type="text" v-model="juice.id" class="form-input">
+                            </td>
+                            <td>
+                                <input type="text" v-model="juice.itemCode" class="form-input" placeholder="600001">
+                            </td>
+                            <td>
+                                <input type="text" v-model="juice.name" class="form-input">
+                            </td>
+                            <td>
+                                <input type="text" v-model="juice.nameAr" class="form-input">
+                            </td>
+                            <td>
+                                <div v-for="(size, sizeIdx) in juice.sizes" :key="size.id" style="display: flex; gap: 10px; margin-bottom: 8px; align-items: center;">
+                                    <input type="text" v-model="size.name" class="form-input" style="flex: 1;" :placeholder="lang === 'ar' ? 'الاسم' : 'Name'">
+                                    <input type="text" v-model="size.nameAr" class="form-input" style="flex: 1;" :placeholder="lang === 'ar' ? 'الاسم بالعربي' : 'Arabic Name'">
+                                    <input type="number" v-model.number="size.price" class="form-input" style="width: 80px;" :placeholder="lang === 'ar' ? 'السعر' : 'Price'">
+                                    <button @click="removeJuiceSize(index, sizeIdx)" class="delete-btn" style="padding: 5px 10px;">×</button>
+                                </div>
+                                <button @click="addJuiceSize(index)" class="add-btn" style="padding: 5px 15px; font-size: 0.9em;">
+                                    {{ lang === 'ar' ? '+ حجم جديد' : '+ Add Size' }}
+                                </button>
+                            </td>
+                            <td>
+                                <input type="text" v-model="juice.description" class="form-input">
+                            </td>
+                            <td>
+                                <input type="text" v-model="juice.descriptionAr" class="form-input">
+                            </td>
+                            <td>
+                                <button @click="removeJuice(index)" class="delete-btn">
+                                    {{ lang === 'ar' ? 'حذف' : 'Delete' }}
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <!-- Toppings Tab -->
@@ -615,6 +683,20 @@
                             {"id": "tuna-salad", "itemCode": "500004", "name": "Tuna Salad", "nameAr": "سلطة تونة", "price": 19, "description": "Fresh tuna salad", "descriptionAr": "سلطة تونة طازجة"},
                             {"id": "custom", "itemCode": "500005", "name": "Build Your Own", "nameAr": "سلطة حسب الطلب", "price": 13, "description": "Create your own custom salad", "descriptionAr": "أنشئ سلطتك الخاصة"},
                             {"id": "caesar", "itemCode": "500006", "name": "Caesar Salad", "nameAr": "سلطة السيزر", "price": 19, "description": "Classic Caesar with romaine and parmesan", "descriptionAr": "سيزر كلاسيكية مع خس روماني وبارميزان"}
+                        ],
+                        "juices": [
+                            {
+                                "id": "fresh-juice",
+                                "itemCode": "600001",
+                                "name": "Fresh Juice",
+                                "nameAr": "عصير طازج",
+                                "sizes": [
+                                    {"id": "medium", "name": "Medium", "nameAr": "وسط", "price": 10},
+                                    {"id": "large", "name": "Large", "nameAr": "كبير", "price": 13}
+                                ],
+                                "description": "Fresh and healthy juice",
+                                "descriptionAr": "عصير طازج وصحي"
+                            }
                         ],
                         "toppings": [
                             {
@@ -775,6 +857,49 @@
                     if (confirm(`Are you sure you want to delete ${item.name}?`)) {
                         category.items.splice(itemIndex, 1);
                         this.showNotification(`Deleted: ${item.name}`);
+                    }
+                },
+                addNewJuice() {
+                    const newJuice = {
+                        id: "juice-" + Date.now(),
+                        itemCode: "600002",
+                        name: "New Juice",
+                        nameAr: "عصير جديد",
+                        sizes: [
+                            {id: "medium", name: "Medium", nameAr: "وسط", price: 10},
+                            {id: "large", name: "Large", nameAr: "كبير", price: 13}
+                        ],
+                        description: "Fresh juice",
+                        descriptionAr: "عصير طازج"
+                    };
+                    this.config.juices.push(newJuice);
+                    this.showNotification('New juice added!');
+                },
+                removeJuice(index) {
+                    const juice = this.config.juices[index];
+                    if (confirm(`Are you sure you want to delete ${juice.name}?`)) {
+                        this.config.juices.splice(index, 1);
+                        this.showNotification(`Deleted: ${juice.name}`);
+                    }
+                },
+                addJuiceSize(juiceIndex) {
+                    const juice = this.config.juices[juiceIndex];
+                    const newSize = {
+                        id: "size-" + Date.now(),
+                        name: "New Size",
+                        nameAr: "حجم جديد",
+                        price: 10
+                    };
+                    juice.sizes.push(newSize);
+                    this.showNotification('New size added!');
+                },
+                removeJuiceSize(juiceIndex, sizeIndex) {
+                    const juice = this.config.juices[juiceIndex];
+                    if (juice.sizes.length > 1) {
+                        juice.sizes.splice(sizeIndex, 1);
+                        this.showNotification('Size removed!');
+                    } else {
+                        alert('Cannot remove the last size!');
                     }
                 }
             },

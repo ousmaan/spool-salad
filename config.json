@@ -9,6 +9,20 @@
     "primaryColor": "#2d5016",
     "accentColor": "#d4af37"
   },
+  "categories": [
+    {
+      "id": "salad",
+      "name": "Salads",
+      "nameAr": "السلطات",
+      "emoji": "🥗"
+    },
+    {
+      "id": "juice",
+      "name": "Fresh Juices",
+      "nameAr": "العصائر الطازجة",
+      "emoji": "🥤"
+    }
+  ],
   "baseSalads": [
     {
       "id": "quinoa-tabbouleh",
@@ -63,6 +77,30 @@
       "price": 13,
       "description": "Create your own custom salad",
       "descriptionAr": "أنشئ سلطتك الخاصة"
+    }
+  ],
+  "juices": [
+    {
+      "id": "fresh-juice",
+      "itemCode": "600001",
+      "name": "Fresh Juice",
+      "nameAr": "عصير طازج",
+      "sizes": [
+        {
+          "id": "medium",
+          "name": "Medium",
+          "nameAr": "وسط",
+          "price": 10
+        },
+        {
+          "id": "large",
+          "name": "Large",
+          "nameAr": "كبير",
+          "price": 13
+        }
+      ],
+      "description": "Fresh and healthy juice",
+      "descriptionAr": "عصير طازج وصحي"
     }
   ],
   "toppings": [
