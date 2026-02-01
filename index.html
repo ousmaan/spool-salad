@@ -121,16 +121,16 @@
             padding: 30px;
         }
 
-        /* Header */
+        /* Header - Compact & Optimized */
         .header {
             background: var(--white);
-            padding: 25px 50px;
+            padding: 12px 30px;
             box-shadow: var(--shadow-sm);
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0;
-            border-bottom: 3px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -140,14 +140,14 @@
         .header-brand {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .logo {
-            height: 70px;
+            height: 45px;
             width: auto;
             object-fit: contain;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1));
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.1));
             transition: var(--transition);
             animation: fadeIn 0.8s ease-out;
         }
@@ -159,12 +159,12 @@
         .brand-text {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 2px;
         }
 
         .header h1 {
             color: var(--primary);
-            font-size: 1.8em;
+            font-size: 1.3em;
             margin: 0;
             font-weight: 700;
             letter-spacing: -0.5px;
@@ -172,7 +172,7 @@
 
         .tagline {
             color: var(--text-light);
-            font-size: 0.95em;
+            font-size: 0.8em;
             font-style: normal;
             margin: 0;
             font-weight: 400;
@@ -185,10 +185,10 @@
         }
 
         .hero-text {
-            font-size: 1.1em;
+            font-size: 0.95em;
             color: var(--highlight);
             font-weight: 600;
-            margin-left: 30px;
+            margin-left: 20px;
         }
 
         /* Burger Menu */
@@ -975,44 +975,6 @@
             transform: scale(1.02);
         }
 
-        /* Juice Size Buttons */
-        .juice-size-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .juice-size-btn {
-            flex: 1;
-            background: var(--light);
-            border: 2px solid var(--primary);
-            color: var(--text);
-            padding: 12px;
-            border-radius: 8px;
-            font-family: 'Cairo', 'Arial', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.95em;
-        }
-
-        .juice-size-btn:hover {
-            background: rgba(45, 80, 22, 0.1);
-            transform: scale(1.05);
-        }
-
-        .juice-size-btn.selected {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            font-weight: 700;
-        }
-
-        .juice-size-btn strong {
-            display: block;
-            margin-top: 5px;
-            font-size: 1.1em;
-        }
-
         /* Main Grid */
         .main-grid {
             display: grid;
@@ -1730,9 +1692,6 @@
 
                     <!-- Base Salads -->
                     <div class="card" v-if="selectedCategory === 'salad'">
-                        <h2 class="card-title">
-                            {{ lang === 'ar' ? 'اختر السلطة الأساسية' : 'Select Base Salad' }}
-                        </h2>
                         <div class="salads-grid">
                             <div 
                                 v-for="salad in config.baseSalads" 
@@ -1744,36 +1703,6 @@
                                 <div class="salad-name">{{ salad.nameAr }}</div>
                                 <div class="salad-description">{{ salad.description }}</div>
                                 <div class="salad-price">{{ salad.price }} {{ config.shop.currency }}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Fresh Juices -->
-                    <div class="card" v-if="selectedCategory === 'juice'">
-                        <h2 class="card-title">
-                            {{ lang === 'ar' ? 'العصائر الطازجة' : 'Fresh Juices' }}
-                        </h2>
-                        <div class="salads-grid">
-                            <div 
-                                v-for="juice in config.juices" 
-                                :key="juice.id"
-                                class="salad-card juice-card"
-                            >
-                                <div class="salad-name">{{ juice[lang === 'ar' ? 'nameAr' : 'name'] }}</div>
-                                <div class="salad-description">{{ juice[lang === 'ar' ? 'descriptionAr' : 'description'] }}</div>
-                                
-                                <!-- Size Buttons -->
-                                <div class="juice-size-buttons">
-                                    <button 
-                                        v-for="size in juice.sizes" 
-                                        :key="size.id"
-                                        class="juice-size-btn"
-                                        :class="{ selected: selectedProduct?.id === juice.id && selectedSize?.id === size.id }"
-                                        @click="selectJuice(juice, size)">
-                                        {{ size[lang === 'ar' ? 'nameAr' : 'name'] }}<br>
-                                        <strong>{{ size.price }} {{ config.shop.currency }}</strong>
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -1946,30 +1875,15 @@
                             "accentColor": "#d4af37"
                         },
                         "categories": [
-                            {id: "salad", name: "Salads", nameAr: "السلطات", emoji: "🥗"},
-                            {id: "juice", name: "Fresh Juices", nameAr: "العصائر الطازجة", emoji: "🥤"}
+                            {id: "salad", name: "Salads", nameAr: "السلطات", emoji: "🥗"}
                         ],
                         "baseSalads": [
-                            {"id": "quinoa-tabbouleh", "itemCode": "500001", "name": "Quinoa Tabbouleh Salad", "nameAr": "سلطة كينوا تبولة", "price": 19, "description": "كينوا مع نكهات التبولة التقليدية", "descriptionAr": "كينوا مع نكهات التبولة التقليدية"},
-                            {"id": "date-salad", "itemCode": "500002", "name": "Date Salad", "nameAr": "سلطة التمر", "price": 19, "description": "سلطة طازجة مع التمر", "descriptionAr": "سلطة طازجة مع التمر"},
-                            {"id": "fusilli-broccoli", "itemCode": "500003", "name": "Fusilli Broccoli Salad", "nameAr": "سلطة فيوزلي بروكلي", "price": 20, "description": "معكرونة فيوزلي مع بروكلي طازج", "descriptionAr": "معكرونة فيوزلي مع بروكلي طازج"},
-                            {"id": "tuna-salad", "itemCode": "500004", "name": "Tuna Salad", "nameAr": "سلطة تونة", "price": 19, "description": "سلطة تونة طازجة", "descriptionAr": "سلطة تونة طازجة"},
-                            {"id": "caesar", "itemCode": "500006", "name": "Caesar Salad", "nameAr": "سلطة السيزر", "price": 19, "description": "سيزر كلاسيكية مع خس روماني وبارميزان", "descriptionAr": "سيزر كلاسيكية مع خس روماني وبارميزان"},
-                            {"id": "custom", "itemCode": "500005", "name": "Build Your Own", "nameAr": "سلطة حسب الطلب", "price": 13, "description": "أنشئ سلطتك الخاصة", "descriptionAr": "أنشئ سلطتك الخاصة"}
-                        ],
-                        "juices": [
-                            {
-                                "id": "fresh-juice",
-                                "itemCode": "600001",
-                                "name": "Fresh Juice",
-                                "nameAr": "عصير طازج",
-                                "sizes": [
-                                    {"id": "medium", "name": "Medium", "nameAr": "وسط", "price": 10},
-                                    {"id": "large", "name": "Large", "nameAr": "كبير", "price": 13}
-                                ],
-                                "description": "Fresh and healthy juice",
-                                "descriptionAr": "عصير طازج وصحي"
-                            }
+                            {"id": "caesar", "itemCode": "500001", "name": "Caesar Salad", "nameAr": "سلطة السيزر", "price": 19, "description": "سيزر كلاسيكية مع خس روماني وبارميزان", "descriptionAr": "سيزر كلاسيكية مع خس روماني وبارميزان"},
+                            {"id": "quinoa-tabbouleh", "itemCode": "500002", "name": "Quinoa Tabbouleh Salad", "nameAr": "سلطة كينوا تبولة", "price": 19, "description": "كينوا مع نكهات التبولة التقليدية", "descriptionAr": "كينوا مع نكهات التبولة التقليدية"},
+                            {"id": "date-salad", "itemCode": "500003", "name": "Date Salad", "nameAr": "سلطة التمر", "price": 19, "description": "سلطة طازجة مع التمر", "descriptionAr": "سلطة طازجة مع التمر"},
+                            {"id": "fusilli-broccoli", "itemCode": "500004", "name": "Fusilli Broccoli Salad", "nameAr": "سلطة فيوزلي بروكلي", "price": 20, "description": "معكرونة فيوزلي مع بروكلي طازج", "descriptionAr": "معكرونة فيوزلي مع بروكلي طازج"},
+                            {"id": "tuna-salad", "itemCode": "500005", "name": "Tuna Salad", "nameAr": "سلطة تونة", "price": 19, "description": "سلطة تونة طازجة", "descriptionAr": "سلطة تونة طازجة"},
+                            {"id": "custom", "itemCode": "500006", "name": "Build Your Own", "nameAr": "سلطة حسب الطلب", "price": 13, "description": "أنشئ سلطتك الخاصة", "descriptionAr": "أنشئ سلطتك الخاصة"}
                         ],
                         "toppings": [
                             {
@@ -2045,9 +1959,7 @@
                     return selected;
                 },
                 currentProductPrice() {
-                    if (this.selectedCategory === 'juice' && this.selectedSize) {
-                        return this.selectedSize.price;
-                    } else if (this.selectedSalad) {
+                    if (this.selectedSalad) {
                         return this.selectedSalad.price;
                     } else if (this.selectedProduct) {
                         return this.selectedProduct.price;
@@ -2064,14 +1976,18 @@
                     return total;
                 },
                 barcodeData() {
-                    // Format: XXXXXXPPPPP (11 digits - simplified, removed useless random digits)
+                    // Format: NXXXXXXPPPPPNNNNNN (18 digits)
                     // Use itemCode from selected product
                     const product = this.selectedProduct || this.selectedSalad;
                     const itemCode = product?.itemCode?.padStart(6, '0') || '000001';
                     const priceInHalalas = Math.round(this.totalPrice * 100);
                     const priceStr = priceInHalalas.toString().padStart(5, '0');
                     
-                    return `${itemCode}${priceStr}`;
+                    // Generate random digits for security/complexity
+                    const leadingRandom = Math.floor(Math.random() * 10); // 1 digit
+                    const trailingRandom = Math.floor(100000 + Math.random() * 900000); // 6 digits
+                    
+                    return `${leadingRandom}${itemCode}${priceStr}${trailingRandom}`;
                 },
                 currentDateTime() {
                     const now = new Date();
@@ -2090,11 +2006,6 @@
                     this.selectedSalad = null;
                     this.selectedSize = null;
                     this.toppings = {};
-                },
-                selectJuice(juice, size) {
-                    this.selectedProduct = juice;
-                    this.selectedSize = size;
-                    this.selectedCategory = 'juice';
                 },
                 selectBaseSalad(salad) {
                     this.selectedSalad = salad;
@@ -2170,12 +2081,12 @@
                     const svg = document.getElementById('barcode');
                     if (svg) {
                         JsBarcode(svg, this.barcodeData, {
-                            format: 'CODE39',
+                            format: 'CODE128',
                             width: 1.5,
                             height: 60,
                             displayValue: true,
                             fontSize: 14,
-                            margin: 8
+                            margin: 5
                         });
                     }
                 },
@@ -2287,17 +2198,17 @@
                                 letter-spacing: 0.5px;
                             }
                             .shop-tagline {
-                                font-size: 8pt;
+                                font-size: 12pt;
                                 margin-bottom: 2mm;
                                 color: #555;
                             }
                             .shop-info {
-                                font-size: 8pt;
+                                font-size: 12pt;
                                 margin: 0.5mm 0;
                                 color: #333;
                             }
                             .instructions {
-                                font-size: 9pt;
+                                font-size: 12pt;
                                 margin-bottom: 2mm;
                                 padding: 2mm;
                                 background: #f0f0f0;
@@ -2321,7 +2232,7 @@
                             }
                             .items-table td {
                                 padding: 1.5mm 0;
-                                font-size: 10pt;
+                                font-size: 12pt;
                                 border-bottom: 1px dotted #ccc;
                             }
                             .item-name {
@@ -2365,7 +2276,7 @@
                             }
                             .barcode-label {
                                 text-align: center;
-                                font-size: 10pt;
+                                font-size: 12pt;
                                 margin-bottom: 2mm;
                                 color: #666;
                             }
