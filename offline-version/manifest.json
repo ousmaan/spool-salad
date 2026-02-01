@@ -1,0 +1,91 @@
+{
+  "name": "Spool Salad Terminal",
+  "short_name": "Spool Salad",
+  "description": "Point of Sale System for Spool Salad Bar",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/images/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/images/screenshot1.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "food", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Staff Terminal",
+      "short_name": "Staff",
+      "description": "Open Staff Order Terminal",
+      "url": "/staff/index.html",
+      "icons": [{ "src": "assets/images/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Customer Terminal",
+      "short_name": "Customer",
+      "description": "Open Customer Self-Service",
+      "url": "/customer/index.html",
+      "icons": [{ "src": "assets/images/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Admin Panel",
+      "short_name": "Admin",
+      "description": "Open Admin Configuration",
+      "url": "/admin.html",
+      "icons": [{ "src": "assets/images/icon-96x96.png", "sizes": "96x96" }]
+    }
+  ]
+}

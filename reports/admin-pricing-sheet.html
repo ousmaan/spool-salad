@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Pricing Sheet | ورقة الأسعار الإدارية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            color: #333;
+        }
+
+        .document {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d5016 0%, #1a2f0c 100%);
+            color: white;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .header-right {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+        }
+
+        .doc-info {
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+
+        .doc-info strong {
+            color: #d4af37;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .notice-box {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff4d1 100%);
+            border: 2px solid #d4af37;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .notice-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2d5016;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notice-text {
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .notice-text ul {
+            margin: 10px 0 0 20px;
+            list-style: disc;
+        }
+
+        .notice-text li {
+            margin: 5px 0;
+        }
+
+        .section-header {
+            background: #2d5016;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 30px 0 20px 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header:first-of-type {
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        thead {
+            background: linear-gradient(135deg, #d4af37 0%, #c9a02a 100%);
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        tbody tr:last-child {
+            border-bottom: 2px solid #d4af37;
+        }
+
+        td {
+            padding: 15px;
+            text-align: right;
+        }
+
+        .item-code {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: #2d5016;
+            background: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .item-name-ar {
+            font-weight: 700;
+            color: #333;
+            font-size: 1.05em;
+        }
+
+        .item-name-en {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+
+        .price {
+            font-weight: 700;
+            color: #d4af37;
+            font-size: 1.2em;
+        }
+
+        .special-price {
+            color: #e74c3c;
+        }
+
+        .notes-column {
+            color: #999;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .category-label {
+            background: #2d5016;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            background: #f5f5f5;
+            padding: 30px 40px;
+            border-top: 3px solid #d4af37;
+        }
+
+        .footer-notes {
+            margin-bottom: 20px;
+        }
+
+        .footer-notes h3 {
+            color: #2d5016;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .footer-notes ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-notes li {
+            padding: 8px 0;
+            padding-right: 25px;
+            position: relative;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .footer-notes li:before {
+            content: "✓";
+            position: absolute;
+            right: 0;
+            color: #2d5016;
+            font-weight: 700;
+        }
+
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px dashed #d4af37;
+        }
+
+        .signature-box {
+            text-align: center;
+        }
+
+        .signature-line {
+            width: 200px;
+            border-bottom: 2px solid #333;
+            margin: 40px auto 10px auto;
+        }
+
+        .signature-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .document {
+                box-shadow: none;
+            }
+
+            tbody tr:hover {
+                background: white;
+            }
+
+            @page {
+                margin: 1cm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="document">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>سبول | Spool</h1>
+                <p>ورقة الأسعار والأكواد الإدارية</p>
+            </div>
+            <div class="header-right">
+                <div class="doc-info">
+                    <div><strong>التاريخ:</strong> <span id="current-date"></span></div>
+                    <div><strong>المستند:</strong> Admin Pricing</div>
+                    <div><strong>الإصدار:</strong> V3.0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Important Notice -->
+            <div class="notice-box">
+                <div class="notice-title">⚠️ ملاحظات هامة | Important Notes</div>
+                <div class="notice-text">
+                    <ul>
+                        <li><strong>الأكواد:</strong> يجب إدخال أكواد المنتجات بدقة في نظام الباركود</li>
+                        <li><strong>الأسعار:</strong> جميع الأسعار بالريال السعودي شاملة الضريبة</li>
+                        <li><strong>التحديثات:</strong> أي تغيير في الأسعار يجب تحديثه في النظام فوراً</li>
+                        <li><strong>السرية:</strong> هذا المستند سري للاستخدام الإداري فقط</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Salads Section -->
+            <div class="section-header">🥗 السلطات | Salads</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 15%">كود المنتج<br>Item Code</th>
+                        <th style="width: 35%">اسم المنتج<br>Product Name</th>
+                        <th style="width: 15%">السعر<br>Price</th>
+                        <th style="width: 35%">ملاحظات<br>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="item-code">500001</span></td>
+                        <td>
+                            <div class="item-name-ar">سلطة السيزر</div>
+                            <div class="item-name-en">Caesar Salad</div>
+                        </td>
+                        <td><span class="price">19 ر.س</span></td>
+                        <td class="notes-column">سيزر كلاسيكية مع خس روماني وبارميزان</td>
+                    </tr>
+                    <tr>
+                        <td><span class="item-code">500002</span></td>
+                        <td>
+                            <div class="item-name-ar">سلطة كينوا تبولة</div>
+                            <div class="item-name-en">Quinoa Tabbouleh Salad</div>
+                        </td>
+                        <td><span class="price special-price">15 ر.س</span></td>
+                        <td class="notes-column">⭐ سعر خاص - الأقل سعراً في السلطات</td>
+                    </tr>
+                    <tr>
+                        <td><span class="item-code">500003</span></td>
+                        <td>
+                            <div class="item-name-ar">سلطة التمر</div>
+                            <div class="item-name-en">Date Salad</div>
+                        </td>
+                        <td><span class="price">19 ر.س</span></td>
+                        <td class="notes-column">سلطة طازجة مع التمر السعودي</td>
+                    </tr>
+                    <tr>
+                        <td><span class="item-code">500004</span></td>
+                        <td>
+                            <div class="item-name-ar">سلطة فيوزلي بروكلي</div>
+                            <div class="item-name-en">Fusilli Broccoli Salad</div>
+                        </td>
+                        <td><span class="price">19 ر.س</span></td>
+                        <td class="notes-column">معكرونة فيوزلي مع بروكلي طازج</td>
+                    </tr>
+                    <tr>
+                        <td><span class="item-code">500005</span></td>
+                        <td>
+                            <div class="item-name-ar">سلطة تونة</div>
+                            <div class="item-name-en">Tuna Salad</div>
+                        </td>
+                        <td><span class="price">19 ر.س</span></td>
+                        <td class="notes-column">تونة بروتين عالي</td>
+                    </tr>
+                    <tr>
+                        <td><span class="item-code">600008</span></td>
+                        <td>
+                            <div class="item-name-ar">سلطة النيسواز</div>
+                            <div class="item-name-en">Niçoise Salad</div>
+                        </td>
+                        <td><span class="price">19 ر.س</span></td>
+                        <td class="notes-column">⭐ منتج جديد - سلطة فرنسية كلاسيكية</td>
+                    </tr>
+                    <tr>
+                        <td><span class="item-code">600009</span></td>
+                        <td>
+                            <div class="item-name-ar">بستو بينا سلاط</div>
+                            <div class="item-name-en">Pesto Penne Salad</div>
+                        </td>
+                        <td><span class="price">19 ر.س</span></td>
+                        <td class="notes-column">⭐ منتج جديد - معكرونة بينا مع صوص البستو</td>
+                    </tr>
+                    <tr>
+                        <td><span class="item-code">500006</span></td>
+                        <td>
+                            <div class="item-name-ar">سلطة حسب الطلب</div>
+                            <div class="item-name-en">Build Your Own</div>
+                        </td>
+                        <td><span class="price special-price">14 ر.س</span></td>
+                        <td class="notes-column">⭐ سعر القاعدة فقط + سعر الإضافات</td>
+                    </tr>
+                    <tr>
+                        <td><span class="item-code">600007</span></td>
+                        <td>
+                            <div class="item-name-ar">سلطة فواكه</div>
+                            <div class="item-name-en">Fruit Salad</div>
+                        </td>
+                        <td>
+                            <div><span class="price">صغير: 15 ر.س</span></div>
+                            <div><span class="price">وسط: 20 ر.س</span></div>
+                            <div><span class="price">كبير: 25 ر.س</span></div>
+                        </td>
+                        <td class="notes-column">بدون إضافات - ثلاثة أحجام</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Sauces Section -->
+            <div class="section-header">🥫 الصوصات | Sauces</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40%">اسم الصوص<br>Sauce Name</th>
+                        <th style="width: 15%">السعر<br>Price</th>
+                        <th style="width: 45%">ملاحظات<br>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="category-label">صوص</span>
+                            <div class="item-name-ar">صوص شبت</div>
+                            <div class="item-name-en">Dill Sauce</div>
+                        </td>
+                        <td><span class="price">2.5 ر.س</span></td>
+                        <td class="notes-column">إضافة اختيارية</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">صوص</span>
+                            <div class="item-name-ar">صوص الكيل</div>
+                            <div class="item-name-en">Kale Sauce</div>
+                        </td>
+                        <td><span class="price">2.5 ر.س</span></td>
+                        <td class="notes-column">إضافة اختيارية</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">صوص</span>
+                            <div class="item-name-ar">صوص السيزر</div>
+                            <div class="item-name-en">Caesar Sauce</div>
+                        </td>
+                        <td><span class="price">2.5 ر.س</span></td>
+                        <td class="notes-column">إضافة اختيارية</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">صوص</span>
+                            <div class="item-name-ar">صوص البستو</div>
+                            <div class="item-name-en">Pesto Sauce</div>
+                        </td>
+                        <td><span class="price">2.5 ر.س</span></td>
+                        <td class="notes-column">إضافة اختيارية</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">صوص</span>
+                            <div class="item-name-ar">صوص فيناجريت</div>
+                            <div class="item-name-en">Vinaigrette Sauce</div>
+                        </td>
+                        <td><span class="price">2.5 ر.س</span></td>
+                        <td class="notes-column">إضافة اختيارية</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">صوص</span>
+                            <div class="item-name-ar">صوص الرانش</div>
+                            <div class="item-name-en">Ranch Sauce</div>
+                        </td>
+                        <td><span class="price">2.5 ر.س</span></td>
+                        <td class="notes-column">⭐ منتج جديد - إضافة اختيارية</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Add-ons Section -->
+            <div class="section-header">🍗 البروتينات والإضافات | Proteins & Add-ons</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40%">اسم المنتج<br>Product Name</th>
+                        <th style="width: 15%">السعر<br>Price</th>
+                        <th style="width: 45%">ملاحظات<br>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="category-label">بروتين</span>
+                            <div class="item-name-ar">دجاج</div>
+                            <div class="item-name-en">Chicken</div>
+                        </td>
+                        <td><span class="price">3 ر.س</span></td>
+                        <td class="notes-column">⭐ منتج جديد - دجاج مشوي</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">بروتين</span>
+                            <div class="item-name-ar">تونا</div>
+                            <div class="item-name-en">Tuna</div>
+                        </td>
+                        <td><span class="price">3 ر.س</span></td>
+                        <td class="notes-column">⭐ منتج جديد - تونة معلبة</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">إضافة</span>
+                            <div class="item-name-ar">جبن</div>
+                            <div class="item-name-en">Cheese</div>
+                        </td>
+                        <td><span class="price">2 ر.س</span></td>
+                        <td class="notes-column">⭐ منتج جديد - جبن مبشور</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">إضافة</span>
+                            <div class="item-name-ar">بيض مسلوق</div>
+                            <div class="item-name-en">Boiled Egg</div>
+                        </td>
+                        <td><span class="price">1 ر.س</span></td>
+                        <td class="notes-column">⭐ منتج جديد - بيضة واحدة</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Vegetables Section -->
+            <div class="section-header">🥦 الخضروات | Vegetables</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40%">اسم المنتج<br>Product Name</th>
+                        <th style="width: 15%">السعر<br>Price</th>
+                        <th style="width: 45%">ملاحظات<br>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="category-label">خضار</span>
+                            <div class="item-name-ar">بروكلي</div>
+                            <div class="item-name-en">Broccoli</div>
+                        </td>
+                        <td><span class="price">2.5 ر.س</span></td>
+                        <td class="notes-column">خضار طازجة</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">خضار</span>
+                            <div class="item-name-ar">فلفل الوان</div>
+                            <div class="item-name-en">Bell Peppers</div>
+                        </td>
+                        <td><span class="price">2.5 ر.س</span></td>
+                        <td class="notes-column">خضار طازجة</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">خضار</span>
+                            <div class="item-name-ar">ذرة</div>
+                            <div class="item-name-en">Corn</div>
+                        </td>
+                        <td><span class="price">2.5 ر.س</span></td>
+                        <td class="notes-column">خضار طازجة</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">خضار</span>
+                            <div class="item-name-ar">شمندر</div>
+                            <div class="item-name-en">Beets</div>
+                        </td>
+                        <td><span class="price">2.5 ر.س</span></td>
+                        <td class="notes-column">خضار طازجة</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">خضار</span>
+                            <div class="item-name-ar">طماطم مشيري</div>
+                            <div class="item-name-en">Cherry Tomatoes</div>
+                        </td>
+                        <td><span class="price">2.5 ر.س</span></td>
+                        <td class="notes-column">خضار طازجة</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Fruits Section -->
+            <div class="section-header">🍓 الفواكه | Fruits</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40%">اسم المنتج<br>Product Name</th>
+                        <th style="width: 15%">السعر<br>Price</th>
+                        <th style="width: 45%">ملاحظات<br>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="category-label">فواكه</span>
+                            <div class="item-name-ar">توت</div>
+                            <div class="item-name-en">Berries</div>
+                        </td>
+                        <td><span class="price">2 ر.س</span></td>
+                        <td class="notes-column">⭐ منتج جديد - فواكه طازجة</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">فواكه</span>
+                            <div class="item-name-ar">فراولة</div>
+                            <div class="item-name-en">Strawberries</div>
+                        </td>
+                        <td><span class="price">2 ر.س</span></td>
+                        <td class="notes-column">فواكه طازجة</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="category-label">فواكه</span>
+                            <div class="item-name-ar">رمان</div>
+                            <div class="item-name-en">Pomegranate</div>
+                        </td>
+                        <td><span class="price">1 ر.س</span></td>
+                        <td class="notes-column">فواكه طازجة - الأقل سعراً</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-notes">
+                <h3>📝 ملاحظات إدارية مهمة:</h3>
+                <ul>
+                    <li>يجب التأكد من صحة الأكواد عند إدخالها في نظام الباركود</li>
+                    <li>السلطات المميزة بـ ⭐ هي منتجات جديدة أو ذات أسعار خاصة</li>
+                    <li>سلطة "حسب الطلب" سعرها 14 ريال + سعر الإضافات المختارة</li>
+                    <li>سلطة الفواكه لا تقبل إضافات - أسعار محددة حسب الحجم</li>
+                    <li>جميع الصوصات بسعر موحد 2.5 ريال للواحدة</li>
+                    <li>البروتينات (دجاج وتونا) بسعر 3 ريال، الجبن 2 ريال، البيض 1 ريال</li>
+                    <li>الخضروات جميعها بسعر موحد 2.5 ريال</li>
+                    <li>الفواكه: التوت والفراولة 2 ريال، الرمان 1 ريال</li>
+                </ul>
+            </div>
+
+            <div class="signature-section">
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">توقيع المدير | Manager Signature</div>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">التاريخ | Date</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        const dateElement = document.getElementById('current-date');
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const arabicDate = today.toLocaleDateString('ar-SA', options);
+        const englishDate = today.toLocaleDateString('en-US', options);
+        dateElement.textContent = `${arabicDate} | ${englishDate}`;
+
+        // Auto-print on load (optional - uncomment to enable)
+        // window.onload = () => setTimeout(() => window.print(), 500);
+    </script>
+</body>
+</html>
