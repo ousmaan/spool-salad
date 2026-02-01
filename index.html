@@ -2064,18 +2064,14 @@
                     return total;
                 },
                 barcodeData() {
-                    // Format: NXXXXXXPPPPPNNNNNN (18 digits)
+                    // Format: XXXXXXPPPPP (11 digits - simplified, removed useless random digits)
                     // Use itemCode from selected product
                     const product = this.selectedProduct || this.selectedSalad;
                     const itemCode = product?.itemCode?.padStart(6, '0') || '000001';
                     const priceInHalalas = Math.round(this.totalPrice * 100);
                     const priceStr = priceInHalalas.toString().padStart(5, '0');
                     
-                    // Generate random digits for security/complexity
-                    const leadingRandom = Math.floor(Math.random() * 10); // 1 digit
-                    const trailingRandom = Math.floor(100000 + Math.random() * 900000); // 6 digits
-                    
-                    return `${leadingRandom}${itemCode}${priceStr}${trailingRandom}`;
+                    return `${itemCode}${priceStr}`;
                 },
                 currentDateTime() {
                     const now = new Date();
@@ -2174,12 +2170,12 @@
                     const svg = document.getElementById('barcode');
                     if (svg) {
                         JsBarcode(svg, this.barcodeData, {
-                            format: 'CODE128',
-                            width: 2,
+                            format: 'CODE39',
+                            width: 1.5,
                             height: 60,
                             displayValue: true,
                             fontSize: 14,
-                            margin: 10
+                            margin: 8
                         });
                     }
                 },
@@ -2247,7 +2243,7 @@
                             }
                             @page {
                                 size: 80mm auto;
-                                margin: 3mm;
+                                margin: 0;
                             }
                             * {
                                 margin: 0;
@@ -2256,14 +2252,15 @@
                                 -webkit-print-color-adjust: exact;
                                 print-color-adjust: exact;
                             }
-                            body {
+                            html, body {
                                 margin: 0;
                                 padding: 0;
                                 background: white;
                                 font-family: 'Cairo', 'Arial', sans-serif;
                             }
                             #print-content {
-                                width: 74mm;
+                                width: 90%;
+                                max-width: 74mm;
                                 margin: 0 auto;
                                 padding: 3mm;
                                 background: white;
@@ -2359,6 +2356,12 @@
                                 padding: 3mm 0;
                                 border-top: 2px dashed #000;
                                 border-bottom: 2px dashed #000;
+                                text-align: center;
+                            }
+                            .barcode-section svg {
+                                display: block;
+                                margin: 0 auto;
+                                max-width: 100%;
                             }
                             .barcode-label {
                                 text-align: center;

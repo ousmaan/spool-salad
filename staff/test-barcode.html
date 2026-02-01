@@ -92,8 +92,8 @@
         <h1>🔍 Barcode Format Tester</h1>
         
         <div class="info">
-            <strong>Daftra Barcode Format:</strong> NXXXXXXPPPPPNNNNNN (18 digits)<br>
-            <strong>N</strong> = Random digits (security) | <strong>XXXXXX</strong> = Product Code | <strong>PPPPP</strong> = Price (halalas) | <strong>NNNNNN</strong> = Random digits (security)
+            <strong>Simplified Barcode Format:</strong> XXXXXXPPPPP (11 digits)<br>
+            <strong>XXXXXX</strong> = Product Code | <strong>PPPPP</strong> = Price (halalas)
         </div>
 
         <div class="input-group">
@@ -142,12 +142,8 @@
             const priceInHalalas = Math.round(price * 100);
             const priceStr = priceInHalalas.toString().padStart(5, '0');
             
-            // Generate random digits for security/complexity
-            const leadingRandom = Math.floor(Math.random() * 10); // 1 digit
-            const trailingRandom = Math.floor(100000 + Math.random() * 900000); // 6 digits
-            
-            // Format: NXXXXXXPPPPPNNNNNN
-            const barcodeData = `${leadingRandom}${productCode}${priceStr}${trailingRandom}`;
+            // Format: XXXXXXPPPPP (simplified - removed useless random digits)
+            const barcodeData = `${productCode}${priceStr}`;
             
             // Show breakdown
             const breakdown = document.getElementById('breakdown');
@@ -155,23 +151,21 @@
             breakdown.innerHTML = `
                 <strong>Barcode Breakdown:</strong><br>
                 <div>Full Code: <strong>${barcodeData}</strong></div>
-                <div>├─ Leading Random: <strong>${leadingRandom}</strong> 🎲</div>
                 <div>├─ Product Code: <strong>${productCode}</strong></div>
-                <div>├─ Price (halalas): <strong>${priceStr}</strong> (${price.toFixed(2)} SAR)</div>
-                <div>└─ Trailing Random: <strong>${trailingRandom}</strong> 🎲</div>
+                <div>└─ Price (halalas): <strong>${priceStr}</strong> (${price.toFixed(2)} SAR)</div>
                 <div style="margin-top: 10px;">Total Length: ${barcodeData.length} digits</div>
-                <div style="margin-top: 10px; color: #4CAF50;">✅ Complex barcode for security!</div>
+                <div style="margin-top: 10px; color: #4CAF50;">✅ Simplified for better thermal printing!</div>
             `;
             
             // Generate barcode
             const canvas = document.getElementById('barcode');
             JsBarcode(canvas, barcodeData, {
-                format: 'CODE128',
-                width: 2,
+                format: 'CODE39',
+                width: 1.5,
                 height: 80,
                 displayValue: true,
                 fontSize: 16,
-                margin: 10
+                margin: 8
             });
             
             document.getElementById('barcodeText').innerHTML = 

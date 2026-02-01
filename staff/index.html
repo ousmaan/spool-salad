@@ -2107,10 +2107,10 @@
                     return total;
                 },
                 barcodeData() {
-                    // Format: NXXXXXXPPPPPNNNNNN
+                    // Format: XXXXXXPPPPP (simplified - removed useless random digits)
                     const productCode = this.config.shop.productCode.padStart(6, '0');
                     const priceInHalalas = (this.totalPrice * 100).toString().padStart(5, '0');
-                    return `0${productCode}${priceInHalalas}000000`;
+                    return `${productCode}${priceInHalalas}`;
                 },
                 currentDateTime() {
                     const now = new Date();
@@ -2208,12 +2208,12 @@
                     const canvas = document.getElementById('barcode');
                     if (canvas) {
                         JsBarcode(canvas, this.barcodeData, {
-                            format: 'CODE128',
-                            width: 2,
+                            format: 'CODE39',
+                            width: 1.5,
                             height: 60,
                             displayValue: true,
                             fontSize: 14,
-                            margin: 10
+                            margin: 8
                         });
                     }
                 },
