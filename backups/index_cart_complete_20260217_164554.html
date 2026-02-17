@@ -602,23 +602,18 @@
         }
 
         .cart-remove-btn {
-            background: #ff4444;
-            color: white;
-            border: 2px solid #cc0000;
-            padding: 8px 14px;
+            background: var(--warning);
+            border: none;
+            padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.3em;
-            font-weight: bold;
-            box-shadow: 0 2px 6px rgba(255, 68, 68, 0.3);
+            transition: var(--transition);
+            font-size: 1.2em;
         }
 
         .cart-remove-btn:hover {
-            background: #cc0000;
-            border-color: #990000;
-            transform: scale(1.15);
-            box-shadow: 0 4px 12px rgba(204, 0, 0, 0.4);
+            background: #e74c3c;
+            transform: scale(1.1);
         }
 
         .cart-item-toppings {
@@ -2238,25 +2233,6 @@
             transform: translateY(-2px) scale(1.01);
         }
 
-        .btn-secondary {
-            background: white;
-            color: var(--primary);
-            border: 3px solid var(--primary);
-            font-weight: 700;
-            font-family: 'Cairo', 'Arial', sans-serif;
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 8px 24px rgba(45, 80, 22, 0.3);
-        }
-
-        .btn-secondary:active {
-            transform: translateY(-2px) scale(1.01);
-        }
-
         .btn-danger {
             background: var(--warning);
             color: white;
@@ -3063,11 +3039,11 @@
 
                             <!-- Actions -->
                             <div class="action-buttons">
-                                <button class="btn btn-secondary" @click="printDirectly">
-                                    {{ lang === 'ar' ? '🖨️ طباعة مباشرة' : '🖨️ Print Single' }}
-                                </button>
                                 <button class="btn btn-primary" @click="addToCart">
                                     {{ lang === 'ar' ? '➕ أضف للسلة' : '➕ Add to Cart' }}
+                                </button>
+                                <button class="btn btn-secondary" @click="printDirectly">
+                                    {{ lang === 'ar' ? '🖨️ طباعة مباشرة' : '🖨️ Print Single' }}
                                 </button>
                                 <button class="btn btn-danger" @click="clearOrder">
                                     {{ lang === 'ar' ? '🗑️ مسح' : '🗑️ Clear' }}
@@ -3624,10 +3600,7 @@ printCart() {
                     const totalItemCount = this.cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
                     const itemsList = `
                         <tr>
-                            <td class="item-name">
-                                ${isRTL ? 'طلب متعدد' : 'Mixed Order'}<br>
-                                (${totalItemCount} ${isRTL ? 'عنصر' : 'items'})
-                            </td>
+                            <td class="item-name">${isRTL ? 'طلب متعدد' : 'Mixed Order'} (${totalItemCount} ${isRTL ? 'عنصر' : 'items'})</td>
                             <td class="item-price">${this.cartSubtotal.toFixed(2)} ${currency}</td>
                         </tr>
                     `;
@@ -3643,7 +3616,7 @@ printCart() {
                             <div class="receipt-header">
                                 <div class="shop-name">★ ${shopName} ★</div>
                                 <div class="shop-tagline">لكل ما تنتجه الحقول</div>
-                                <div class="shop-info">${timeStr} ${dateStr}</div>
+                                <div class="shop-info">${dateStr} ${timeStr}</div>
                                 <div class="shop-info">#${barcodeNumber}</div>
                             </div>
                             
@@ -3962,23 +3935,19 @@ printCart() {
                             }
                             .shop-tagline {
                                 font-size: 12pt;
-                                font-weight: bold;
                                 margin-bottom: 2mm;
-                                color: #000;
+                                color: #555;
                             }
                             .shop-info {
                                 font-size: 12pt;
-                                font-weight: bold;
                                 margin: 0.5mm 0;
-                                color: #000;
+                                color: #333;
                             }
                             .instructions {
                                 font-size: 12pt;
-                                font-weight: bold;
-                                color: #000;
                                 margin-bottom: 2mm;
                                 padding: 2mm;
-                                background: #fff;
+                                background: #f0f0f0;
                                 border-radius: 2mm;
                                 text-align: center;
                                 line-height: 1.4;
@@ -4000,22 +3969,17 @@ printCart() {
                             .items-table td {
                                 padding: 1.5mm 0;
                                 font-size: 12pt;
-                                font-weight: bold;
-                                color: #000;
-                                border-bottom: 1px dotted #000;
+                                border-bottom: 1px dotted #ccc;
                             }
                             .item-name {
                                 text-align: right;
                                 width: 60%;
                                 padding-right: 2mm;
-                                font-weight: bold;
-                                color: #000;
                             }
                             .item-price {
                                 text-align: left;
                                 width: 40%;
                                 font-weight: bold;
-                                color: #000;
                             }
                             .separator {
                                 border-top: 2px dashed #000;
@@ -4091,16 +4055,8 @@ printCart() {
                     
                     // Get current date/time
                     const now = new Date();
-                    // Format: 12:59 PM 31/12/2026
-                    const hours = now.getHours();
-                    const minutes = now.getMinutes().toString().padStart(2, '0');
-                    const ampm = hours >= 12 ? 'PM' : 'AM';
-                    const hours12 = hours % 12 || 12;
-                    const timeStr = `${hours12}:${minutes} ${ampm}`;
-                    const day = now.getDate().toString().padStart(2, '0');
-                    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-                    const year = now.getFullYear();
-                    const dateStr = `${day}/${month}/${year}`;
+                    const dateStr = now.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US');
+                    const timeStr = now.toLocaleTimeString(isRTL ? 'ar-SA' : 'en-US', { hour: '2-digit', minute: '2-digit' });
                     const shopName = this.config.shop.nameAr;
                     const orderNum = this.barcodeData;
                     
@@ -4111,7 +4067,7 @@ printCart() {
                             <div class="receipt-header">
                                 <div class="shop-name">★ ${shopName} ★</div>
                                 <div class="shop-tagline">لكل ما تنتجه الحقول</div>
-                                <div class="shop-info">${timeStr} ${dateStr}</div>
+                                <div class="shop-info">${dateStr} ${timeStr}</div>
                                 <div class="shop-info">#${orderNum}</div>
                             </div>
                             
@@ -4123,11 +4079,11 @@ printCart() {
                             <!-- Total -->
                             <div class="total-section">
                                 ${discountAmount > 0 ? `
-                                    <div class="total-line" style="font-size: 12pt; font-weight: bold; color: #000; margin-bottom: 2mm;">
+                                    <div class="total-line" style="font-size: 12pt; font-weight: normal; margin-bottom: 2mm;">
                                         <span>المجموع الفرعي</span>
                                         <span>${subtotalPrice} ${currency}</span>
                                     </div>
-                                    <div class="total-line" style="font-size: 12pt; font-weight: bold; color: #000; margin-bottom: 2mm;">
+                                    <div class="total-line" style="font-size: 12pt; color: #e74c3c; margin-bottom: 2mm;">
                                         <span>الخصم</span>
                                         <span>-${discountAmount} ${currency}</span>
                                     </div>
