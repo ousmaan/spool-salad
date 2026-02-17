@@ -782,16 +782,46 @@
 
         .cart-discount-input-wrapper {
             margin-top: 10px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 10px;
+            align-items: center;
         }
 
         .cart-discount-input {
-            width: 100%;
             padding: 12px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 1.1em;
             text-align: center;
             font-weight: 600;
+        }
+
+        .discount-qty-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 8px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .discount-qty-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .discount-qty-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
         }
 
         .cart-discount-input:focus {
@@ -2635,18 +2665,30 @@
                     </div>
                     
                     <div class="cart-discount-input-wrapper">
+                        <button 
+                            class="discount-qty-btn" 
+                            @click="discountValue = Math.max(0, cartDiscountAmount - 1)"
+                            :disabled="cartDiscountAmount <= 0">
+                            −
+                        </button>
                         <input 
                             ref="discountInput"
                             type="number" 
-                            :value="cartDiscountAmount.toFixed(2)"
-                            @input="updateCartDiscount($event.target.value)"
+                            :value="cartDiscountAmount"
+                            @input="discountValue = parseFloat($event.target.value) || 0"
                             :placeholder="lang === 'ar' ? 'إجمالي الخصم' : 'Total discount'"
                             class="cart-discount-input"
                             min="0"
                             :max="cartSubtotal"
                             @focus="$event.target.select()"
                         >
-                        <small style="display: block; margin-top: 5px; text-align: center; color: var(--text-light);">
+                        <button 
+                            class="discount-qty-btn" 
+                            @click="discountValue = Math.min(cartSubtotal, cartDiscountAmount + 1)"
+                            :disabled="cartDiscountAmount >= cartSubtotal">
+                            +
+                        </button>
+                        <small style="display: block; margin-top: 5px; text-align: center; color: var(--text-light); grid-column: 1 / -1;">
                             {{ lang === 'ar' ? 'إجمالي الخصم (بالريال)' : 'Total discount (SAR)' }}
                         </small>
                     </div>
