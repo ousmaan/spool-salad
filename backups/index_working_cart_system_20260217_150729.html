@@ -1964,7 +1964,7 @@
 
         .discount-toggle-btn {
             width: 100%;
-            padding: 12px 15px 12px 50px;
+            padding: 12px 15px;
             background: linear-gradient(135deg, #fff9e6 0%, #fff4d1 100%);
             border: 2px solid #d4af37;
             border-radius: 8px;
@@ -1977,11 +1977,6 @@
             justify-content: space-between;
             align-items: center;
             font-family: 'Cairo', 'Arial', sans-serif;
-            position: relative;
-        }
-        
-        [dir="rtl"] .discount-toggle-btn {
-            padding: 12px 50px 12px 15px;
         }
 
         .discount-toggle-btn:hover {
@@ -1993,37 +1988,6 @@
         .toggle-icon {
             font-size: 0.8em;
             transition: transform 0.3s;
-        }
-
-        .discount-clear-btn-main {
-            padding: 0;
-            background: #ff4444;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9em;
-            margin: 0;
-            transition: all 0.3s ease;
-            width: 28px;
-            height: 28px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            position: absolute;
-            right: 15px;
-        }
-        
-        [dir="rtl"] .discount-clear-btn-main {
-            right: auto;
-            left: 15px;
-        }
-
-        .discount-clear-btn-main:hover {
-            background: #cc0000;
-            transform: scale(1.1);
         }
 
         /* Discount Section */
@@ -2499,10 +2463,6 @@
             flex: 1;
         }
 
-        /* Vue Cloak - hide until mounted */
-        [v-cloak] {
-            display: none !important;
-        }
 
         /* Notifications */
         .notification {
@@ -2947,9 +2907,12 @@
                             <div class="discount-toggle" v-if="selectedProduct">
                                 <button class="discount-toggle-btn" @click="showDiscount = !showDiscount">
                                     <span>{{ lang === 'ar' ? '💰 إضافة خصم' : '💰 Add Discount' }}</span>
-                                    <span v-if="discountValue > 0" class="discount-clear-btn-main" @click.stop="discountValue = 0; showDiscount = false;" title="Clear discount">
-                                        ✕
-                                    </span>
+                                    <div style="display: flex; gap: 10px; align-items: center;">
+                                        <button v-if="discountValue > 0" class="discount-clear-btn-main" @click.stop="discountValue = 0; showDiscount = false;" title="Clear discount" style="padding: 2px 8px; background: #ff4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                                            ✕
+                                        </button>
+                                        <span class="toggle-icon">{{ showDiscount ? '▼' : '▶' }}</span>
+                                    </div>
                                 </button>
                             </div>
 
@@ -3015,7 +2978,7 @@
 
         <!-- Print Preview Modal -->
         <!-- Notification -->
-        <div v-if="notification" class="notification" v-cloak>
+        <div v-if="notification" class="notification">
             {{ notification }}
         </div>
     </div>
@@ -3193,19 +3156,26 @@
                     return this.cart.reduce((sum, item) => sum + ((item.basePrice || item.price) * (item.quantity || 1)), 0);
                 },
                 cartDiscountAmount() {
-                    // If user has edited discount in cart, use that as the TOTAL discount
+                    // Calculate cart-level discount (from discount section in cart)
+                    // Plus any individual item discounts
+                    const itemDiscounts = this.cart.reduce((sum, item) => sum + ((item.discountAmount || 0) * (item.quantity || 1)), 0);
+                    
+                    // Cart-level discount (applied to subtotal)
+                    let cartLevelDiscount = 0;
                     if (this.discountValue > 0 && this.cart.length > 0) {
-                        // User's custom discount overrides everything
-                        return Math.min(this.discountValue, this.cartSubtotal);
-                    } else {
-                        // No cart discount, just show sum of item-level discounts
-                        return this.cart.reduce((sum, item) => sum + ((item.discountAmount || 0) * (item.quantity || 1)), 0);
+                        const subtotal = this.cartSubtotal;
+                        if (this.discountType === 'percent') {
+                            cartLevelDiscount = (subtotal * Math.min(this.discountValue, 100) / 100);
+                        } else {
+                            cartLevelDiscount = Math.min(this.discountValue, subtotal);
+                        }
                     }
+                    
+                    return itemDiscounts + cartLevelDiscount;
                 },
                 cartTotal() {
-                    // Total = Subtotal - All Discounts
-                    // This gives us the final amount customer pays
-                    return Math.max(this.cartSubtotal - this.cartDiscountAmount, 0);
+                    // Sum of final prices (after discount) * quantity
+                    return this.cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
                 },
                 barcodeData() {
                     // Format: NXXXXXXPPPPPNNNNNN (18 digits)
@@ -3406,11 +3376,18 @@
                     this.showNotification(this.lang === 'ar' ? 'تم الحذف من السلة' : 'Removed from cart');
                 },
                 updateCartDiscount(value) {
-                    // User is setting the TOTAL discount amount for the entire cart
-                    // This replaces/overrides any item-level discounts
-                    const totalDiscount = parseFloat(value) || 0;
-                    this.discountValue = Math.max(0, totalDiscount);
-                    this.discountType = 'fixed'; // Always SAR
+                    // User is editing the TOTAL discount amount in SAR
+                    const newTotalDiscount = parseFloat(value) || 0;
+                    
+                    // Calculate existing item-level discounts
+                    const itemDiscounts = this.cart.reduce((sum, item) => sum + ((item.discountAmount || 0) * (item.quantity || 1)), 0);
+                    
+                    // The cart-level discount is the difference
+                    const cartLevelDiscount = Math.max(0, newTotalDiscount - itemDiscounts);
+                    
+                    // Update discountValue to reflect the cart-level portion
+                    this.discountValue = cartLevelDiscount;
+                    this.discountType = 'fixed'; // Always use fixed for cart-level
                 },
                 clearCart() {
                     this.cart = [];

@@ -2311,12 +2311,14 @@
                                         </button>
                                     </div>
                                     <input 
+                                        ref="discountInput"
                                         type="number" 
                                         v-model.number="discountValue"
                                         :placeholder="lang === 'ar' ? 'قيمة الخصم' : 'Discount value'"
                                         class="discount-input"
                                         min="0"
                                         :max="discountType === 'percent' ? 100 : totalPrice"
+                                        @focus="$event.target.select()"
                                     >
                                 </div>
                                 <div class="discount-amount" v-if="discountAmount > 0">
@@ -3153,6 +3155,17 @@
                         this.$nextTick(() => {
                             if (this.$refs.printButton) {
                                 this.$refs.printButton.focus();
+                            }
+                        });
+                    }
+                },
+                showDiscount(newVal) {
+                    if (newVal) {
+                        // Focus and select discount input when section is expanded
+                        this.$nextTick(() => {
+                            if (this.$refs.discountInput) {
+                                this.$refs.discountInput.focus();
+                                this.$refs.discountInput.select();
                             }
                         });
                     }
