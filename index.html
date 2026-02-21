@@ -21,6 +21,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
+        /* (Your existing CSS remains exactly the same – no changes) */
         :root {
             --primary: #2d5016;
             --secondary: #3d6826;
@@ -3114,6 +3115,8 @@
                             {"id": "tuna-salad", "itemCode": "500005", "name": "Tuna Salad", "nameAr": "سلطة تونة", "price": 19, "description": "سلطة تونة طازجة", "descriptionAr": "سلطة تونة طازجة"},
                             {"id": "nicoise", "itemCode": "600008", "name": "Niçoise Salad", "nameAr": "سلطة النيسواز", "price": 19, "description": "سلطة نيسواز كلاسيكية", "descriptionAr": "سلطة نيسواز كلاسيكية"},
                             {"id": "pesto-penne", "itemCode": "600009", "name": "Pesto Penne Salad", "nameAr": "بستو بينا سلاط", "price": 19, "description": "معكرونة بينا مع صوص البستو", "descriptionAr": "معكرونة بينا مع صوص البستو"},
+                            // New product: Spool Salad (placed before custom)
+                            {"id": "spool-salad", "itemCode": "500006", "name": "Spool Salad", "nameAr": "سلطة السبول", "price": 24, "description": "سلطة السبول المميزة", "descriptionAr": "سلطة السبول المميزة"},
                             {"id": "custom", "itemCode": "500006", "name": "Build Your Own", "nameAr": "سلطة حسب الطلب", "price": 14, "description": "أنشئ سلطتك الخاصة", "descriptionAr": "أنشئ سلطتك الخاصة"}
                         ],
                         "fruitSalads": [
@@ -3129,6 +3132,22 @@
                                 ],
                                 "description": "Fresh fruit salad",
                                 "descriptionAr": "سلطة فواكه طازجة",
+                                "noToppings": true
+                            },
+                            // New product: Juice (with four sizes)
+                            {
+                                "id": "juice",
+                                "itemCode": "500006",
+                                "name": "Juice",
+                                "nameAr": "عصير",
+                                "sizes": [
+                                    //{"id": "small", "name": "Small", "nameAr": "صغير", "price": 3},
+                                    {"id": "medium", "name": "Medium", "nameAr": "وسط", "price": 4},
+                                    {"id": "large", "name": "Large", "nameAr": "كبير", "price": 10},
+                                    {"id": "extra-large", "name": "Extra Large", "nameAr": "كبير جداً", "price": 20}
+                                ],
+                                "description": "Fresh juice",
+                                "descriptionAr": "عصير طازج",
                                 "noToppings": true
                             }
                         ],
