@@ -3504,6 +3504,19 @@
                 toggleCart() {
                     this.showCart = !this.showCart;
                 },
+                getOrderNumber() {
+                    // Get current order number from localStorage, or start at 0
+                    let orderNum = parseInt(localStorage.getItem('orderNumber') || '0', 10);
+                    
+                    // Increment and reset after 99
+                    orderNum = (orderNum >= 99) ? 1 : orderNum + 1;
+                    
+                    // Save for next time
+                    localStorage.setItem('orderNumber', orderNum.toString());
+                    
+                    // Return as 2-digit string (01-99)
+                    return orderNum.toString().padStart(2, '0');
+                },
                 generateBarcodeNumber() {
                     // Use existing barcode format - DO NOT CHANGE!
                     // For cart: use "Build Your Own" salad item code
@@ -3525,6 +3538,9 @@ printCart() {
                     
                     // Save cart data
                     this.saveCartOrder();
+                    
+                    // Generate order number (2-digit, resets after 99)
+                    const orderNum = this.getOrderNumber();
                     
                     // Generate barcode number
                     const barcodeNumber = this.generateBarcodeNumber();
@@ -3711,6 +3727,7 @@ printCart() {
                                 <div class="shop-name">★ ${shopName} ★</div>
                                 <div class="shop-tagline">لكل ما تنتجه الحقول</div>
                                 <div class="shop-info">${timeStr} ${dateStr}</div>
+                                <div class="shop-info">Order #${orderNum}</div>
                                 <div class="shop-info">#${barcodeNumber}</div>
                             </div>
                             
