@@ -2473,16 +2473,19 @@
                     document.head.insertAdjacentHTML('beforeend', printStyles);
                     document.body.insertAdjacentHTML('beforeend', printDiv);
                     
-                    // Wait and print
+                    // Wait for DOM to render, then print
                     setTimeout(() => {
                         window.print();
-                        
-                        // Restore original content after print dialog closes
-                        setTimeout(() => {
-                            document.getElementById('print-only-styles').remove();
-                            document.getElementById('print-content').remove();
-                        }, 500);
                     }, 300);
+                    
+                    // Clean up after print completes using afterprint event
+                    window.addEventListener('afterprint', function cleanup() {
+                        const styles = document.getElementById('print-only-styles');
+                        const content = document.getElementById('print-content');
+                        if (styles) styles.remove();
+                        if (content) content.remove();
+                        window.removeEventListener('afterprint', cleanup);
+                    });
                     
                     // Clear order after print
                     setTimeout(() => {
