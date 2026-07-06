@@ -3565,6 +3565,32 @@ printCart() {
                                     padding: 2mm; 
                                     font-size: 12pt;
                                 }
+                                .close-receipt-btn {
+                                    display: none !important;
+                                }
+                            }
+                            .close-receipt-btn {
+                                position: absolute;
+                                top: 5px;
+                                right: 5px;
+                                background: #ff4444;
+                                color: white;
+                                border: none;
+                                width: 30px;
+                                height: 30px;
+                                border-radius: 50%;
+                                font-size: 20px;
+                                cursor: pointer;
+                                z-index: 1000;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+                            .close-receipt-btn:hover {
+                                background: #cc0000;
+                            }
+                            #print-content {
+                                position: relative;
                             }
                         </style>
                     `;
@@ -3595,25 +3621,38 @@ printCart() {
                                     window.print();
                                 }, 100);
                                 
-                                // Clean up after print completes using afterprint event
-                                window.addEventListener('afterprint', function cleanup() {
-                                    // Remove print content and styles
+                                // Add close button and touch dismissal for cart receipt
+                                this.$nextTick(() => {
                                     const printContent = document.getElementById('print-content');
-                                    const printStylesEl = document.getElementById('cart-print-styles');
-                                    if (printContent) printContent.remove();
-                                    if (printStylesEl) printStylesEl.remove();
+                                    if (printContent && !printContent.querySelector('.close-receipt-btn')) {
+                                        const closeBtn = document.createElement('button');
+                                        closeBtn.className = 'close-receipt-btn';
+                                        closeBtn.innerHTML = '×';
+                                        closeBtn.onclick = (e) => {
+                                            e.stopPropagation();
+                                            const stylesEl = document.getElementById('cart-print-styles');
+                                            if (printContent) printContent.remove();
+                                            if (stylesEl) stylesEl.remove();
+                                        };
+                                        printContent.insertBefore(closeBtn, printContent.firstChild);
+                                    }
                                     
-                                    // Clear cart
-                                    this.cart = [];
-                                    this.discountType = 'fixed';
-                                    this.discountValue = 0;
-                                    this.showDiscount = false;
-                                    this.showCart = false;
-                                    this.showNotification(this.lang === 'ar' ? '✓ تمت الطباعة بنجاح' : '✓ Printed successfully');
+                                    // Add touch/click listener to dismiss receipt (except when clicking buttons)
+                                    const dismissHandler = (e) => {
+                                        if (e.target.closest('.close-receipt-btn')) return;
+                                        const stylesEl = document.getElementById('cart-print-styles');
+                                        if (printContent) printContent.remove();
+                                        if (stylesEl) stylesEl.remove();
+                                        document.removeEventListener('click', dismissHandler);
+                                        document.removeEventListener('touchstart', dismissHandler);
+                                    };
                                     
-                                    // Remove event listener
-                                    window.removeEventListener('afterprint', cleanup);
-                                }.bind(this));
+                                    // Delay adding listener slightly so initial click doesn't immediately dismiss
+                                    setTimeout(() => {
+                                        document.addEventListener('click', dismissHandler);
+                                        document.addEventListener('touchstart', dismissHandler);
+                                    }, 500);
+                                });
                             } catch (error) {
                                 console.error('Barcode generation error:', error);
                                 const printContent = document.getElementById('print-content');
@@ -4113,6 +4152,38 @@ printCart() {
                                 #print-content {
                                     display: block !important;
                                 }
+                                @page { size: 80mm auto; margin: 0; }
+                                #print-content { 
+                                    width: 80mm; 
+                                    padding: 2mm; 
+                                    font-size: 12pt;
+                                }
+                                .close-receipt-btn {
+                                    display: none !important;
+                                }
+                            }
+                            .close-receipt-btn {
+                                position: absolute;
+                                top: 5px;
+                                right: 5px;
+                                background: #ff4444;
+                                color: white;
+                                border: none;
+                                width: 30px;
+                                height: 30px;
+                                border-radius: 50%;
+                                font-size: 20px;
+                                cursor: pointer;
+                                z-index: 1000;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+                            .close-receipt-btn:hover {
+                                background: #cc0000;
+                            }
+                            #print-content {
+                                position: relative;
                             }
                         </style>
                     `;
@@ -4188,13 +4259,36 @@ printCart() {
                         window.print();
                     }, 300);
                     
-                    // Clean up after print completes using afterprint event
-                    window.addEventListener('afterprint', function cleanup() {
-                        const styles = document.getElementById('print-only-styles');
-                        const content = document.getElementById('print-content');
-                        if (styles) styles.remove();
-                        if (content) content.remove();
-                        window.removeEventListener('afterprint', cleanup);
+                    // Add close button to receipt for manual dismissal
+                    this.$nextTick(() => {
+                        const printContent = document.getElementById('print-content');
+                        if (printContent && !printContent.querySelector('.close-receipt-btn')) {
+                            const closeBtn = document.createElement('button');
+                            closeBtn.className = 'close-receipt-btn';
+                            closeBtn.innerHTML = '×';
+                            closeBtn.onclick = () => {
+                                const stylesEl = document.getElementById('print-only-styles');
+                                if (printContent) printContent.remove();
+                                if (stylesEl) stylesEl.remove();
+                            };
+                            printContent.insertBefore(closeBtn, printContent.firstChild);
+                        }
+                        
+                        // Add touch/click listener to dismiss receipt (except when clicking buttons)
+                        const dismissHandler = (e) => {
+                            if (e.target.closest('.close-receipt-btn')) return;
+                            const stylesEl = document.getElementById('print-only-styles');
+                            if (printContent) printContent.remove();
+                            if (stylesEl) stylesEl.remove();
+                            document.removeEventListener('click', dismissHandler);
+                            document.removeEventListener('touchstart', dismissHandler);
+                        };
+                        
+                        // Delay adding listener slightly so initial click doesn't immediately dismiss
+                        setTimeout(() => {
+                            document.addEventListener('click', dismissHandler);
+                            document.addEventListener('touchstart', dismissHandler);
+                        }, 500);
                     });
                 },
                 showNotification(message) {
