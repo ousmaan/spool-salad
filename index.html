@@ -3637,7 +3637,7 @@ printCart() {
                                     window.print();
                                 }, 100);
                                 
-                                // Add close button and touch dismissal for cart receipt
+                                // Add close button for cart receipt - receipt stays visible until manually closed
                                 this.$nextTick(() => {
                                     const printContent = document.getElementById('print-content');
                                     if (printContent && !printContent.querySelector('.close-receipt-btn')) {
@@ -3652,22 +3652,6 @@ printCart() {
                                         };
                                         printContent.insertBefore(closeBtn, printContent.firstChild);
                                     }
-                                    
-                                    // Add touch/click listener to dismiss receipt (except when clicking buttons)
-                                    const dismissHandler = (e) => {
-                                        if (e.target.closest('.close-receipt-btn')) return;
-                                        const stylesEl = document.getElementById('cart-print-styles');
-                                        if (printContent) printContent.remove();
-                                        if (stylesEl) stylesEl.remove();
-                                        document.removeEventListener('click', dismissHandler);
-                                        document.removeEventListener('touchstart', dismissHandler);
-                                    };
-                                    
-                                    // Delay adding listener slightly so initial click doesn't immediately dismiss
-                                    setTimeout(() => {
-                                        document.addEventListener('click', dismissHandler);
-                                        document.addEventListener('touchstart', dismissHandler);
-                                    }, 500);
                                 });
                             } catch (error) {
                                 console.error('Barcode generation error:', error);
