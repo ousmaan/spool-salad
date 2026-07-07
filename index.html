@@ -2907,31 +2907,92 @@
                 <div>
                     <!-- Base Salads -->
                     <div class="card">
+                        <h2 class="card-title">{{ lang === 'ar' ? 'السلطات' : 'Salads' }}</h2>
                         <div class="salads-grid">
-                            <div 
-                                v-for="salad in config.baseSalads" 
-                                :key="salad.id"
-                                class="salad-card"
-                                :class="{ selected: selectedSalad?.id === salad.id }"
-                                @click="selectBaseSalad(salad)"
-                            >
-                                <div class="salad-name">{{ salad.nameAr }}</div>
-                                <div class="salad-description">{{ salad.description }}</div>
-                                <div class="salad-price">{{ salad.price }} {{ config.shop.currency }}</div>
-                            </div>
+                            <!-- Salads with sizes (Build Your Own) -->
+                            <template v-for="salad in config.baseSalads" :key="salad.id">
+                                <div 
+                                    v-if="salad.sizes"
+                                    class="salad-card fruit-salad-card"
+                                >
+                                    <div class="salad-name">{{ salad.nameAr }}</div>
+                                    <div class="salad-description">{{ salad.descriptionAr }}</div>
+                                    <div class="fruit-size-buttons">
+                                        <button 
+                                            v-for="size in salad.sizes" 
+                                            :key="size.id"
+                                            class="fruit-size-btn"
+                                            :class="{ selected: selectedSalad?.id === salad.id && selectedSize?.id === size.id }"
+                                            @click="selectBaseSalad(salad, size)">
+                                            {{ size.nameAr }}<br>
+                                            <strong>{{ size.price }} {{ config.shop.currency }}</strong>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Regular salads with fixed price -->
+                                <div 
+                                    v-else
+                                    class="salad-card"
+                                    :class="{ selected: selectedSalad?.id === salad.id }"
+                                    @click="selectBaseSalad(salad)"
+                                >
+                                    <div class="salad-name">{{ salad.nameAr }}</div>
+                                    <div class="salad-description">{{ salad.descriptionAr }}</div>
+                                    <div class="salad-price">{{ salad.price }} {{ config.shop.currency }}</div>
+                                </div>
+                            </template>
                         </div>
                     </div>
 
-                    <!-- Fruit Salads -->
+                    <!-- Sandwiches -->
                     <div class="card">
+                        <h2 class="card-title">{{ lang === 'ar' ? 'السندوتشات' : 'Sandwiches' }}</h2>
+                        <div class="salads-grid">
+                            <template v-for="item in config.sandwiches" :key="item.id">
+                                <div
+                                    v-if="item.sizes"
+                                    class="salad-card fruit-salad-card"
+                                >
+                                    <div class="salad-name">{{ item.nameAr }}</div>
+                                    <div class="salad-description">{{ item.descriptionAr }}</div>
+                                    <div class="fruit-size-buttons">
+                                        <button
+                                            v-for="size in item.sizes"
+                                            :key="size.id"
+                                            class="fruit-size-btn"
+                                            :class="{ selected: selectedProduct?.id === item.id && selectedSize?.id === size.id }"
+                                            @click="selectSandwich(item, size)">
+                                            {{ size.nameAr }}<br>
+                                            <strong>{{ size.price }} {{ config.shop.currency }}</strong>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Fixed Price for items without sizes -->
+                                <div
+                                    v-else
+                                    class="salad-card"
+                                    :class="{ selected: selectedProduct?.id === item.id && !selectedSize }"
+                                    @click="selectSandwich(item)"
+                                >
+                                    <div class="salad-name">{{ item.nameAr }}</div>
+                                    <div class="salad-description">{{ item.descriptionAr }}</div>
+                                    <div class="salad-price">{{ item.price }} {{ config.shop.currency }}</div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Fruit Salads & Juices -->
+                    <div class="card">
+                        <h2 class="card-title">{{ lang === 'ar' ? 'العصائر والسلطات الفواكه' : 'Juices & Fruit Salads' }}</h2>
                         <div class="salads-grid">
                             <div 
                                 v-for="fruit in config.fruitSalads" 
                                 :key="fruit.id"
                                 class="salad-card fruit-salad-card"
                             >
-                                <div class="salad-name">{{ fruit[lang === 'ar' ? 'nameAr' : 'name'] }}</div>
-                                <div class="salad-description">{{ fruit[lang === 'ar' ? 'descriptionAr' : 'description'] }}</div>
+                                <div class="salad-name">{{ fruit.nameAr }}</div>
+                                <div class="salad-description">{{ fruit.descriptionAr }}</div>
                                 
                                 <!-- Size Buttons -->
                                 <div class="fruit-size-buttons">
@@ -2941,7 +3002,7 @@
                                         class="fruit-size-btn"
                                         :class="{ selected: selectedProduct?.id === fruit.id && selectedSize?.id === size.id }"
                                         @click="selectFruitSalad(fruit, size)">
-                                        {{ size[lang === 'ar' ? 'nameAr' : 'name'] }}<br>
+                                        {{ size.nameAr }}<br>
                                         <strong>{{ size.price }} {{ config.shop.currency }}</strong>
                                     </button>
                                 </div>
@@ -2999,7 +3060,7 @@
                             </div>
 
                             <!-- Toppings (salad only) -->
-                            <div v-if="selectedCategory === 'salad'" v-for="topping in selectedToppings" :key="topping.id" class="summary-item">
+                            <div v-if="selectedCategory === 'salad' && !selectedSalad?.noToppings" v-for="topping in selectedToppings" :key="topping.id" class="summary-item">
                                 <div class="item-details">
                                     <span class="item-name">
                                         {{ topping.nameAr }}
@@ -3105,7 +3166,8 @@
                             "accentColor": "#d4af37"
                         },
                         "categories": [
-                            {id: "salad", name: "Salads", nameAr: "السلطات", emoji: "🥗"}
+                            {id: "salad", name: "Salads", nameAr: "السلطات", emoji: "🥗"},
+                            {id: "sandwich", name: "Sandwiches", nameAr: "السندوتشات", emoji: "🥪"}
                         ],
                         "baseSalads": [
                             {"id": "caesar", "itemCode": "500001", "name": "Caesar Salad", "nameAr": "سلطة السيزر", "price": 19, "description": "سيزر كلاسيكية مع خس روماني وبارميزان", "descriptionAr": "سيزر كلاسيكية مع خس روماني وبارميزان"},
@@ -3117,7 +3179,46 @@
                             {"id": "pesto-penne", "itemCode": "600009", "name": "Pesto Penne Salad", "nameAr": "بستو بينا سلاط", "price": 19, "description": "معكرونة بينا مع صوص البستو", "descriptionAr": "معكرونة بينا مع صوص البستو"},
                             // New product: Spool Salad (placed before custom)
                             {"id": "spool-salad", "itemCode": "500006", "name": "Spool Salad", "nameAr": "سلطة السبول", "price": 24, "description": "سلطة السبول المميزة", "descriptionAr": "سلطة السبول المميزة"},
-                            {"id": "custom", "itemCode": "500006", "name": "Build Your Own", "nameAr": "سلطة حسب الطلب", "price": 30, "description": "أنشئ سلطتك الخاصة", "descriptionAr": "أنشئ سلطتك الخاصة"}
+                            {"id": "custom", "itemCode": "500006", "name": "Build Your Own", "nameAr": "سلطة حسب الطلب", "sizes": [
+                                {"id": "small", "name": "Small", "nameAr": "صغير", "price": 10},
+                                {"id": "medium", "name": "Medium", "nameAr": "وسط", "price": 19},
+                                {"id": "large", "name": "Large", "nameAr": "كبير", "price": 30}
+                            ], "description": "أنشئ سلطتك الخاصة", "descriptionAr": "أنشئ سلطتك الخاصة", "noToppings": false}
+                        ],
+                        "sandwiches": [
+                            {
+                                "id": "tortilla-sandwich",
+                                "itemCode": "700001",
+                                "name": "Sandwich Tortilla",
+                                "nameAr": "ساندوتش تورتيلا",
+                                "sizes": [
+                                    {"id": "medium", "name": "Medium", "nameAr": "وسط", "price": 17},
+                                    {"id": "large", "name": "Large", "nameAr": "كبير", "price": 21}
+                                ],
+                                "description": "Delicious tortilla sandwich",
+                                "descriptionAr": "ساندوتش تورتيلا لذيذ",
+                                "noToppings": true
+                            },
+                            {
+                                "id": "gluten-free-sandwich",
+                                "itemCode": "700002",
+                                "name": "Sandwich Gluten-Free",
+                                "nameAr": "ساندوتش خالي من الغلوتين",
+                                "price": 24,
+                                "description": "Gluten-free sandwich",
+                                "descriptionAr": "ساندوتش خالي من الغلوتين",
+                                "noToppings": true
+                            },
+                            {
+                                "id": "turkish-potatoes",
+                                "itemCode": "700003",
+                                "name": "Turkish Potatoes",
+                                "nameAr": "بطاطس تركية",
+                                "price": 15,
+                                "description": "Turkish style potatoes",
+                                "descriptionAr": "بطاطس على الطريقة التركية",
+                                "noToppings": true
+                            }
                         ],
                         "fruitSalads": [
                             {
@@ -3244,7 +3345,7 @@
                 },
                 totalPrice() {
                     let total = this.currentProductPrice;
-                    // Only add toppings if not a fruit salad (fruit salad has noToppings flag)
+                    // Only add toppings if not a fruit salad or sandwich (they have noToppings flag)
                     if (this.selectedCategory === 'salad' && !this.selectedSalad?.noToppings) {
                         for (const topping of this.selectedToppings) {
                             total += topping.price * this.toppings[topping.id];
@@ -3328,13 +3429,20 @@
                     this.selectedProduct = fruit;
                     this.selectedSalad = fruit;
                     this.selectedSize = size;
-                    this.selectedCategory = 'salad';
+                    this.selectedCategory = 'fruit';
                     this.toppings = {}; // Clear toppings for fruit salad
                 },
-                selectBaseSalad(salad) {
+                selectSandwich(sandwich, size = null) {
+                    this.selectedProduct = sandwich;
+                    this.selectedSalad = sandwich;
+                    this.selectedSize = size;
+                    this.selectedCategory = 'sandwich';
+                    this.toppings = {}; // Clear toppings for sandwich
+                },
+                selectBaseSalad(salad, size = null) {
                     this.selectedSalad = salad;
                     this.selectedProduct = salad;
-                    this.selectedSize = null; // Clear size selection
+                    this.selectedSize = size;
                     this.selectedCategory = 'salad';
                     // Auto-scroll to toppings title (with offset for sticky header)
                     this.$nextTick(() => {
@@ -3504,6 +3612,19 @@
                 toggleCart() {
                     this.showCart = !this.showCart;
                 },
+                getOrderNumber() {
+                    // Get current order number from localStorage, or start at 0
+                    let orderNum = parseInt(localStorage.getItem('orderNumber') || '0', 10);
+                    
+                    // Increment and reset after 99
+                    orderNum = (orderNum >= 99) ? 1 : orderNum + 1;
+                    
+                    // Save for next time
+                    localStorage.setItem('orderNumber', orderNum.toString());
+                    
+                    // Return as 2-digit string (01-99)
+                    return orderNum.toString().padStart(2, '0');
+                },
                 generateBarcodeNumber() {
                     // Use existing barcode format - DO NOT CHANGE!
                     // For cart: use "Build Your Own" salad item code
@@ -3525,6 +3646,9 @@ printCart() {
                     
                     // Save cart data
                     this.saveCartOrder();
+                    
+                    // Generate order number (2-digit, resets after 99)
+                    const orderNum = this.getOrderNumber();
                     
                     // Generate barcode number
                     const barcodeNumber = this.generateBarcodeNumber();
@@ -3565,6 +3689,32 @@ printCart() {
                                     padding: 2mm; 
                                     font-size: 12pt;
                                 }
+                                .close-receipt-btn {
+                                    display: none !important;
+                                }
+                            }
+                            .close-receipt-btn {
+                                position: absolute;
+                                top: 5px;
+                                right: 5px;
+                                background: #ff4444;
+                                color: white;
+                                border: none;
+                                width: 30px;
+                                height: 30px;
+                                border-radius: 50%;
+                                font-size: 20px;
+                                cursor: pointer;
+                                z-index: 1000;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+                            .close-receipt-btn:hover {
+                                background: #cc0000;
+                            }
+                            #print-content {
+                                position: relative;
                             }
                         </style>
                     `;
@@ -3573,7 +3723,7 @@ printCart() {
                     document.head.insertAdjacentHTML('beforeend', printStyles);
                     
                     // Generate and inject receipt HTML
-                    const receiptHTML = this.generateCartReceipt(barcodeNumber);
+                    const receiptHTML = this.generateCartReceipt(barcodeNumber, orderNum);
                     document.body.insertAdjacentHTML('beforeend', receiptHTML);
                     
                     // Generate barcode after DOM is ready
@@ -3589,31 +3739,28 @@ printCart() {
                                     fontSize: 14,
                                     margin: 5
                                 });
-                                
+
                                 // Print after barcode is generated
                                 setTimeout(() => {
                                     window.print();
                                 }, 100);
-                                
-                                // Clean up after print completes using afterprint event
-                                window.addEventListener('afterprint', function cleanup() {
-                                    // Remove print content and styles
+
+                                // Add close button for cart receipt
+                                this.$nextTick(() => {
                                     const printContent = document.getElementById('print-content');
-                                    const printStylesEl = document.getElementById('cart-print-styles');
-                                    if (printContent) printContent.remove();
-                                    if (printStylesEl) printStylesEl.remove();
-                                    
-                                    // Clear cart
-                                    this.cart = [];
-                                    this.discountType = 'fixed';
-                                    this.discountValue = 0;
-                                    this.showDiscount = false;
-                                    this.showCart = false;
-                                    this.showNotification(this.lang === 'ar' ? '✓ تمت الطباعة بنجاح' : '✓ Printed successfully');
-                                    
-                                    // Remove event listener
-                                    window.removeEventListener('afterprint', cleanup);
-                                }.bind(this));
+                                    if (printContent && !printContent.querySelector('.close-receipt-btn')) {
+                                        const closeBtn = document.createElement('button');
+                                        closeBtn.className = 'close-receipt-btn';
+                                        closeBtn.innerHTML = '×';
+                                        closeBtn.onclick = (e) => {
+                                            e.stopPropagation();
+                                            const stylesEl = document.getElementById('cart-print-styles');
+                                            if (printContent) printContent.remove();
+                                            if (stylesEl) stylesEl.remove();
+                                        };
+                                        printContent.insertBefore(closeBtn, printContent.firstChild);
+                                    }
+                                });
                             } catch (error) {
                                 console.error('Barcode generation error:', error);
                                 const printContent = document.getElementById('print-content');
@@ -3622,6 +3769,8 @@ printCart() {
                                 if (printStylesEl) printStylesEl.remove();
                                 this.showNotification(this.lang === 'ar' ? 'خطأ في الطباعة' : 'Print error');
                             }
+                        } else {
+                            this.showNotification(this.lang === 'ar' ? 'خطأ في الباركود' : 'Barcode error');
                         }
                     });
                 },
@@ -3638,7 +3787,7 @@ printCart() {
                     this.lastPrintedOrder = orderData;
                     localStorage.setItem('lastPrintedOrder', JSON.stringify(orderData));
                 },
-                generateCartReceipt(barcodeNumber) {
+                generateCartReceipt(barcodeNumber, orderNum) {
                     const isRTL = this.lang === 'ar';
                     const currency = this.config.shop.currency;
                     const shopName = this.config.shop.nameAr;
@@ -3672,7 +3821,7 @@ printCart() {
                                 <div class="shop-name">★ ${shopName} ★</div>
                                 <div class="shop-tagline">لكل ما تنتجه الحقول</div>
                                 <div class="shop-info">${timeStr} ${dateStr}</div>
-                                <div class="shop-info">#${barcodeNumber}</div>
+                                <div class="shop-info" style="font-size: 14pt; font-weight: bold; margin: 2mm 0;">رقم الطلب: ${orderNum}</div>
                             </div>
                             
                             <!-- Order Items -->
@@ -3886,13 +4035,13 @@ printCart() {
                         this.showNotification(this.lang === 'ar' ? 'خطأ في الباركود' : 'Barcode error');
                         return;
                     }
-                    
+
                     this.showModal = false;
-                    
+
                     // Store current page content
                     const originalContent = document.body.innerHTML;
                     const originalTitle = document.title;
-                    
+
                     // Get barcode as SVG string
                     const svgData = new XMLSerializer().serializeToString(svg);
                     const isRTL = this.lang === 'ar';
@@ -3903,6 +4052,8 @@ printCart() {
                     const discountAmount = this.discountAmount;
                     const finalTotal = this.finalTotal;
                     const currency = this.config.shop.currency;
+
+                    try {
                     
                     // Build itemized list
                     let itemsList = '';
@@ -3916,8 +4067,8 @@ printCart() {
                         </tr>
                     `;
                     
-                    // Add toppings total (only for salads) - single line instead of individual items
-                    if (this.selectedCategory === 'salad' && this.selectedToppings.length > 0) {
+                    // Add toppings total (only for salads without noToppings flag) - single line instead of individual items
+                    if (this.selectedCategory === 'salad' && !this.selectedSalad?.noToppings && this.selectedToppings.length > 0) {
                         let toppingsTotal = 0;
                         this.selectedToppings.forEach(topping => {
                             const qty = this.toppings[topping.id];
@@ -4113,11 +4264,44 @@ printCart() {
                                 #print-content {
                                     display: block !important;
                                 }
+                                @page { size: 80mm auto; margin: 0; }
+                                #print-content { 
+                                    width: 80mm; 
+                                    padding: 2mm; 
+                                    font-size: 12pt;
+                                }
+                                .close-receipt-btn {
+                                    display: none !important;
+                                }
+                            }
+                            .close-receipt-btn {
+                                position: absolute;
+                                top: 5px;
+                                right: 5px;
+                                background: #ff4444;
+                                color: white;
+                                border: none;
+                                width: 30px;
+                                height: 30px;
+                                border-radius: 50%;
+                                font-size: 20px;
+                                cursor: pointer;
+                                z-index: 1000;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+                            .close-receipt-btn:hover {
+                                background: #cc0000;
+                            }
+                            #print-content {
+                                position: relative;
                             }
                         </style>
                     `;
                     
-                    // Get current date/time
+                    // Get current date/time and order number
+                    const orderNum = this.getOrderNumber();
                     const now = new Date();
                     // Format: 12:59 PM 31/12/2026
                     const hours = now.getHours();
@@ -4130,8 +4314,7 @@ printCart() {
                     const year = now.getFullYear();
                     const dateStr = `${day}/${month}/${year}`;
                     const shopName = this.config.shop.nameAr;
-                    const orderNum = this.barcodeData;
-                    
+
                     // Create print content element - Compact 80x210mm receipt
                     const printDiv = `
                         <div id="print-content">
@@ -4140,7 +4323,7 @@ printCart() {
                                 <div class="shop-name">★ ${shopName} ★</div>
                                 <div class="shop-tagline">لكل ما تنتجه الحقول</div>
                                 <div class="shop-info">${timeStr} ${dateStr}</div>
-                                <div class="shop-info">#${orderNum}</div>
+                                <div class="shop-info" style="font-size: 14pt; font-weight: bold; margin: 2mm 0;">رقم الطلب: ${orderNum}</div>
                             </div>
                             
                             <!-- Order Items -->
@@ -4188,14 +4371,41 @@ printCart() {
                         window.print();
                     }, 300);
                     
-                    // Clean up after print completes using afterprint event
-                    window.addEventListener('afterprint', function cleanup() {
-                        const styles = document.getElementById('print-only-styles');
-                        const content = document.getElementById('print-content');
-                        if (styles) styles.remove();
-                        if (content) content.remove();
-                        window.removeEventListener('afterprint', cleanup);
+                    // Add close button to receipt for manual dismissal
+                    this.$nextTick(() => {
+                        const printContent = document.getElementById('print-content');
+                        if (printContent && !printContent.querySelector('.close-receipt-btn')) {
+                            const closeBtn = document.createElement('button');
+                            closeBtn.className = 'close-receipt-btn';
+                            closeBtn.innerHTML = '×';
+                            closeBtn.onclick = () => {
+                                const stylesEl = document.getElementById('print-only-styles');
+                                if (printContent) printContent.remove();
+                                if (stylesEl) stylesEl.remove();
+                            };
+                            printContent.insertBefore(closeBtn, printContent.firstChild);
+                        }
+                        
+                        // Add touch/click listener to dismiss receipt (except when clicking buttons)
+                        const dismissHandler = (e) => {
+                            if (e.target.closest('.close-receipt-btn')) return;
+                            const stylesEl = document.getElementById('print-only-styles');
+                            if (printContent) printContent.remove();
+                            if (stylesEl) stylesEl.remove();
+                            document.removeEventListener('click', dismissHandler);
+                            document.removeEventListener('touchstart', dismissHandler);
+                        };
+                        
+                        // Delay adding listener slightly so initial click doesn't immediately dismiss
+                        setTimeout(() => {
+                            document.addEventListener('click', dismissHandler);
+                            document.addEventListener('touchstart', dismissHandler);
+                        }, 500);
                     });
+                    } catch (error) {
+                        console.error('Print error:', error);
+                        this.showNotification(this.lang === 'ar' ? 'خطأ في الطباعة' : 'Print error');
+                    }
                 },
                 showNotification(message) {
                     this.notification = message;
