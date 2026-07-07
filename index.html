@@ -2952,6 +2952,7 @@
                                 v-for="item in config.sandwiches" 
                                 :key="item.id"
                                 class="salad-card fruit-salad-card"
+                                :class="{ selected: selectedProduct?.id === item.id }"
                             >
                                 <div class="salad-name">{{ item.nameAr }}</div>
                                 <div class="salad-description">{{ item.descriptionAr }}</div>
@@ -2972,7 +2973,12 @@
                                 </template>
                                 <!-- Fixed Price for items without sizes -->
                                 <template v-else>
-                                    <div class="salad-price">{{ item.price }} {{ config.shop.currency }}</div>
+                                    <div 
+                                        class="salad-price"
+                                        style="cursor: pointer;"
+                                        @click="selectSandwich(item, null)">
+                                        {{ item.price }} {{ config.shop.currency }}
+                                    </div>
                                 </template>
                             </div>
                         </div>
@@ -3434,6 +3440,11 @@
                     this.selectedSize = size;
                     this.selectedCategory = 'sandwich';
                     this.toppings = {}; // Clear toppings for sandwich
+                    
+                    // If no size is provided (fixed price item), set the price directly
+                    if (!size) {
+                        this.selectedSize = { id: 'default', name: 'Default', price: sandwich.price };
+                    }
                 },
                 selectBaseSalad(salad) {
                     this.selectedSalad = salad;
