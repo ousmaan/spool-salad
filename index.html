@@ -2554,91 +2554,6 @@
             flex: 1;
         }
 
-        /* Printer Error Modal */
-        .printer-error-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            animation: fadeIn 0.3s ease-out;
-            padding: 20px;
-        }
-
-        .printer-error-content {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 480px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.4s ease-out;
-            text-align: center;
-        }
-
-        .printer-error-icon {
-            font-size: 80px;
-            margin-bottom: 20px;
-            animation: shake 0.5s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .printer-error-title {
-            font-size: 1.6em;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 15px;
-            font-family: 'Cairo', 'Arial', sans-serif;
-        }
-
-        .printer-error-message {
-            font-size: 1.1em;
-            color: var(--text-dark);
-            margin-bottom: 30px;
-            line-height: 1.6;
-            font-family: 'Cairo', 'Arial', sans-serif;
-        }
-
-        .printer-error-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .printer-error-btn {
-            flex: 1;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.05em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Cairo', 'Arial', sans-serif;
-        }
-
-        .printer-error-btn-close {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(45, 80, 22, 0.3);
-        }
-
-        .printer-error-btn-close:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(45, 80, 22, 0.5);
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        }
-
         /* Vue Cloak - hide until mounted */
         [v-cloak] {
             display: none !important;
@@ -2900,6 +2815,10 @@
                     <span>🌐</span>
                     <span>{{ lang === 'ar' ? 'English' : 'العربية' }}</span>
                 </div>
+                <a href="admin.html" class="sidebar-item">
+                    <span>⚙️</span>
+                    <span>{{ lang === 'ar' ? 'الإعدادات' : 'Settings' }}</span>
+                </a>
                 <div class="sidebar-item" @click="toggleTheme">
                     <span>🎨</span>
                     <span>{{ lang === 'ar' ? 'تبديل الثيم' : 'Toggle Theme' }}</span>
@@ -2958,22 +2877,6 @@
                     </button>
                     <button class="success-btn success-btn-primary" @click="startNewOrder">
                         {{ lang === 'ar' ? '🔄 طلب جديد' : '🔄 New Order' }}
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Printer Error Modal -->
-        <div class="printer-error-modal" v-if="showPrinterError">
-            <div class="printer-error-content">
-                <div class="printer-error-icon">🖨️❌</div>
-                <h2 class="printer-error-title">{{ lang === 'ar' ? 'خطأ في الطابعة' : 'Printer Error' }}</h2>
-                <p class="printer-error-message">
-                    {{ lang === 'ar' ? 'لم يتم العثور على طابعة الإيصالات، يرجى إعادة توصيل الطابعة والمحاولة مرة أخرى' : 'Couldn\'t find the receipt printer, please reconnect the printer and try again' }}
-                </p>
-                <div class="printer-error-actions">
-                    <button class="printer-error-btn printer-error-btn-close" @click="closePrinterError">
-                        {{ lang === 'ar' ? '✓ حسناً' : '✓ OK' }}
                     </button>
                 </div>
             </div>
@@ -3410,7 +3313,6 @@
                     showDiscount: false,
                     showPrintSuccess: false,
                     lastPrintedOrder: null,
-                    showPrinterError: false,
                     // Shopping Cart System
                     cart: [],
                     showCart: false
@@ -3741,25 +3643,16 @@ printCart() {
                         this.showNotification(this.lang === 'ar' ? 'السلة فارغة' : 'Cart is empty');
                         return;
                     }
-
-                    // Show printer error modal directly
-                    this.showPrinterErrorModal();
-                },
-                printCartOld() {
-                    if (this.cart.length === 0) {
-                        this.showNotification(this.lang === 'ar' ? 'السلة فارغة' : 'Cart is empty');
-                        return;
-                    }
-
+                    
                     // Save cart data
                     this.saveCartOrder();
-
+                    
                     // Generate order number (2-digit, resets after 99)
                     const orderNum = this.getOrderNumber();
-
+                    
                     // Generate barcode number
                     const barcodeNumber = this.generateBarcodeNumber();
-
+                    
                     // Inject CSS styles FIRST (same as printLabel)
                     const printStyles = `
                         <style id="cart-print-styles">
@@ -3847,9 +3740,9 @@ printCart() {
                                     margin: 5
                                 });
 
-                                // Show printer error instead of printing
+                                // Print after barcode is generated
                                 setTimeout(() => {
-                                    this.showPrinterErrorModal();
+                                    window.print();
                                 }, 100);
 
                                 // Add close button for cart receipt
@@ -3983,28 +3876,18 @@ printCart() {
                         footer.classList.toggle('active');
                     }
                 },
-                closePrinterError() {
-                    this.showPrinterError = false;
-                },
-                showPrinterErrorModal() {
-                    this.showPrinterError = true;
-                },
                 printDirectly() {
-                    // Show printer error modal directly
-                    this.showPrinterErrorModal();
-                },
-                printDirectlyOld() {
                     // Save current order data before printing
                     this.saveCurrentOrder();
-
+                    
                     // Generate barcode and print immediately
                     const tempDiv = document.createElement('div');
                     tempDiv.style.display = 'none';
                     tempDiv.innerHTML = '<svg id="temp-barcode"></svg>';
                     document.body.appendChild(tempDiv);
-
+                    
                     const svg = document.getElementById('temp-barcode');
-
+                    
                     try {
                         JsBarcode(svg, this.barcodeData, {
                             format: 'CODE128',
@@ -4014,7 +3897,7 @@ printCart() {
                             fontSize: 14,
                             margin: 5
                         });
-
+                        
                         // Wait for barcode to render, then print
                         this.$nextTick(() => {
                             setTimeout(() => {
@@ -4483,9 +4366,9 @@ printCart() {
                     document.head.insertAdjacentHTML('beforeend', printStyles);
                     document.body.insertAdjacentHTML('beforeend', printDiv);
                     
-                    // Show printer error instead of printing
+                    // Wait for DOM to render, then print
                     setTimeout(() => {
-                        this.showPrinterErrorModal();
+                        window.print();
                     }, 300);
                     
                     // Add close button to receipt for manual dismissal
